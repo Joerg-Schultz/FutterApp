@@ -14,8 +14,8 @@ object Fridge {
      * @param[amount] How much is added (default 1)
      */
     fun addPack(pack: Pack, amount: Int = 1) {
-        val current = content.getOrDefault(pack.food.type, mutableMapOf(pack.size to 0)).getOrDefault(pack.size, 0)
-        content[pack.food.type] = mutableMapOf<Int,Int>(pack.size to current + amount)
+        val current = content.getOrDefault(pack.food.name, mutableMapOf(pack.size to 0)).getOrDefault(pack.size, 0)
+        content[pack.food.name] = mutableMapOf<Int,Int>(pack.size to current + amount)
     }
 
     /**
@@ -23,8 +23,8 @@ object Fridge {
      * @param[pack]
      */
     fun retrievePack(pack: Pack) {
-        val current = content.getOrDefault(pack.food.type, mutableMapOf(pack.size to 0)).getOrDefault(pack.size, 0)
-        content[pack.food.type] = mutableMapOf<Int,Int>(pack.size to if (current - 1 < 0) 0 else current - 1)
+        val current = content.getOrDefault(pack.food.name, mutableMapOf(pack.size to 0)).getOrDefault(pack.size, 0)
+        content[pack.food.name] = mutableMapOf<Int,Int>(pack.size to if (current - 1 < 0) 0 else current - 1)
     }
 
     /**

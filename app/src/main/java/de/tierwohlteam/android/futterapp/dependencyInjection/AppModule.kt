@@ -30,5 +30,8 @@ object AppModule {
     @Provides
     fun provideRatingDao(db: FutterAppDB) = db.ratingDao()
 
+    @Singleton
+    @Provides
+    fun provideFoodDao(db: FutterAppDB) = db.foodDao()
 
 }

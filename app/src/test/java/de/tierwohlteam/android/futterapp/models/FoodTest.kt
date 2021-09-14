@@ -18,6 +18,6 @@ class FoodTest {
         val foodType = FoodType.MEAT
         val meat = "Rindermuskelfleisch Extra"
         val testFood = Food(foodType, meat)
-        assertThat(testFood.type).isEqualTo(meat)
+        assertThat(testFood.name).isEqualTo(meat)
     }
 }

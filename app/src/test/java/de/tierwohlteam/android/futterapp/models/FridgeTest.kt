@@ -23,7 +23,7 @@ class FridgeTest {
         assertThat(fridgeContent.size).isEqualTo(1)
         assertThat(fridgeContent.first().second).isEqualTo(4)
         val gotPack = fridgeContent.first().first
-        assertThat(gotPack.food.type).isEqualTo(meatType)
+        assertThat(gotPack.food.name).isEqualTo(meatType)
         assertThat(gotPack.size).isEqualTo(grams)
     }
 

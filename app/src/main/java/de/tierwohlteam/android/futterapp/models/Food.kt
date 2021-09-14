@@ -9,12 +9,12 @@ import androidx.room.PrimaryKey
 /**
  * The food fed to the dog
  * @property[group] FoodType classification
- * @property[type] the actual food, e.g. carrot
+ * @property[name] the actual food, e.g. carrot
  */
 data class Food(
     val group: FoodType,
     @PrimaryKey
-    val type: String) {
+    val name: String) {
 }
 
 /**

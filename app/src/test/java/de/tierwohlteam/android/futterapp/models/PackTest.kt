@@ -10,7 +10,7 @@ class PackTest {
         val amount = 500
         val pack = Pack(type = meatType, size = amount)
         assertThat(pack.food.group).isEqualTo(FoodType.MEAT)
-        assertThat(pack.food.type).isEqualTo(meatType)
+        assertThat(pack.food.name).isEqualTo(meatType)
     }
 
     @Test

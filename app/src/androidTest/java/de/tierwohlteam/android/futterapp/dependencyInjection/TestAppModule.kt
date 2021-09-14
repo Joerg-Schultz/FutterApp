@@ -26,4 +26,8 @@ object TestAppModule {
     @Provides
     @Named("testRatingDao")
     fun provideRatingDao(db: FutterAppDB) = db.ratingDao()
+
+    @Provides
+    @Named("testFoodDao")
+    fun provideFoodDao(db: FutterAppDB) = db.foodDao()
 }

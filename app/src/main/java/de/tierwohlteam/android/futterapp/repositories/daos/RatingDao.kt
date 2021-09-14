@@ -13,5 +13,5 @@ interface RatingDao {
     suspend fun insert(rating: Rating)
 
     @Query("SELECT * from rating where id = :ratingID")
-    suspend fun getByID(ratingID: Uuid): Rating
+    suspend fun getByID(ratingID: Uuid): Rating?
 }

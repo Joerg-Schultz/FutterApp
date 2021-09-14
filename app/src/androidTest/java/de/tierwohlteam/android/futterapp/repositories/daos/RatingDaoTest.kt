@@ -38,6 +38,11 @@ class RatingDaoTest {
     internal fun setup() {
         hiltRule.inject()
     }
+    @After
+    @Throws(IOException::class)
+    fun closeDb() {
+        db.close()
+    }
 
     @Test
     @Throws(Exception::class)
@@ -46,12 +51,7 @@ class RatingDaoTest {
         val rating = Rating(id = ratingID, value = 3, comment = "reasonable")
         ratingDao.insert(rating)
         val dbRating = ratingDao.getByID(ratingID)
+        assertThat(dbRating).isNotNull()
         assertThat(dbRating).isEqualTo(rating)
-    }
-
-    @After
-    @Throws(IOException::class)
-    fun closeDb() {
-        db.close()
     }
 }

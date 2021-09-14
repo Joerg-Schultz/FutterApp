@@ -6,17 +6,20 @@ import com.google.common.truth.Truth.assertThat
 class PackTest {
     @Test
     fun getType() {
-        val type = "Rindermuskelfleisch Extra"
+        val meatType = "Rindermuskelfleisch Extra"
+        val type = Food(group = FoodType.MEAT, type = meatType)
         val amount = 500
-        val pack = Pack(type = type, amount = amount)
-        assertThat(pack.type).isEqualTo(type)
+        val pack = Pack(food = type, amount = amount)
+        assertThat(pack.food.group).isEqualTo(FoodType.MEAT)
+        assertThat(pack.food.type).isEqualTo(meatType)
     }
 
     @Test
     fun getAmount() {
-        val type = "Rindermuskelfleisch Extra"
+        val meatType = "Rindermuskelfleisch Extra"
+        val type = Food(group = FoodType.MEAT, type = meatType)
         val amount = 500
-        val pack = Pack(type = type, amount = amount)
+        val pack = Pack(food = type, amount = amount)
         assertThat(pack.amount).isEqualTo(amount)
     }
 }

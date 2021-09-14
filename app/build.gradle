@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id("org.jetbrains.dokka") version "1.5.0"
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -43,7 +45,29 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
 
+    // Kotlin DateTime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.0")
+
+    // Room components
+    def roomVersion = "2.3.0"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+    androidTestImplementation "androidx.room:room-testing:$roomVersion"
+
+    //Dagger - Hilt
+    //https://dagger.dev/hilt/gradle-setup.html
+    implementation 'com.google.dagger:hilt-android:2.36'
+    kapt 'com.google.dagger:hilt-compiler:2.36'
+    // https://developer.android.com/training/dependency-injection/hilt-jetpack
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+
+    // For instrumentation tests
+    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.36'
+    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.36'
+    // For local unit tests
+    testImplementation 'com.google.dagger:hilt-android-testing:2.36'
+    kaptTest 'com.google.dagger:hilt-compiler:2.36'
 
     // Documentation
     dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.5.0")

@@ -1,4 +1,4 @@
-package de.tierwohlteam.android.futterapp.ui.main
+package de.tierwohlteam.android.futterapp.viewModels
 
 import androidx.lifecycle.ViewModel
 

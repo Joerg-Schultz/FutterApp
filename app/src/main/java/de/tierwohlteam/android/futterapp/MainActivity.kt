@@ -2,7 +2,7 @@ package de.tierwohlteam.android.futterapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import de.tierwohlteam.android.futterapp.ui.main.MainFragment
+import de.tierwohlteam.android.futterapp.fragments.MainFragment
 
 class MainActivity : AppCompatActivity() {
 

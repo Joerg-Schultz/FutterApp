@@ -1,4 +1,4 @@
-package de.tierwohlteam.android.futterapp.ui.main
+package de.tierwohlteam.android.futterapp.fragments
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import de.tierwohlteam.android.futterapp.R
+import de.tierwohlteam.android.futterapp.viewModels.MainViewModel
 
 class MainFragment : Fragment() {
 

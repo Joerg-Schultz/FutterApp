@@ -17,7 +17,9 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "de.tierwohlteam.android.futterapp.HiltTestRunner"
+
     }
 
     buildTypes {
@@ -27,11 +29,16 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled = true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    packagingOptions {
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
     }
 }
 
@@ -47,6 +54,10 @@ dependencies {
 
     // Kotlin DateTime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.0")
+    //kotlinx-datetime on API < 26 (Android 8)
+    //https://github.com/Kotlin/kotlinx-datetime/issues/48
+    //https://developer.android.com/studio/write/java8-support#library-desugaring
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
     // uuid
     implementation("com.benasher44:uuid:0.3.0")
 
@@ -70,6 +81,11 @@ dependencies {
     // For local unit tests
     testImplementation 'com.google.dagger:hilt-android-testing:2.36'
     kaptTest 'com.google.dagger:hilt-compiler:2.36'
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    // enable runBlockingTest
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3"
+
 
     // Documentation
     dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.5.0")

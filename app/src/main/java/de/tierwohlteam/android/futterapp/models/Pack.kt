@@ -3,10 +3,8 @@ package de.tierwohlteam.android.futterapp.models
 /**
  * food packages
  * @property[food] Food
- * @property[amount] Int grams
+ * @property[size] Int grams
  */
-data class Pack(val food: Food, val amount:Int) {
-    init {
-      check(food.group == FoodType.MEAT)
-    }
+class Pack(type: String, val size:Int) {
+    val food = Food(group = FoodType.MEAT, type)
 }

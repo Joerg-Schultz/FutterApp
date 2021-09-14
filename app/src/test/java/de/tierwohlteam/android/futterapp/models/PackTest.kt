@@ -7,9 +7,8 @@ class PackTest {
     @Test
     fun getType() {
         val meatType = "Rindermuskelfleisch Extra"
-        val type = Food(group = FoodType.MEAT, type = meatType)
         val amount = 500
-        val pack = Pack(food = type, amount = amount)
+        val pack = Pack(type = meatType, size = amount)
         assertThat(pack.food.group).isEqualTo(FoodType.MEAT)
         assertThat(pack.food.type).isEqualTo(meatType)
     }
@@ -17,9 +16,8 @@ class PackTest {
     @Test
     fun getAmount() {
         val meatType = "Rindermuskelfleisch Extra"
-        val type = Food(group = FoodType.MEAT, type = meatType)
         val amount = 500
-        val pack = Pack(food = type, amount = amount)
-        assertThat(pack.amount).isEqualTo(amount)
+        val pack = Pack(type = meatType, size = amount)
+        assertThat(pack.size).isEqualTo(amount)
     }
 }

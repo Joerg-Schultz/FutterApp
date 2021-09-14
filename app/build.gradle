@@ -47,6 +47,8 @@ dependencies {
 
     // Kotlin DateTime
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.0")
+    // uuid
+    implementation("com.benasher44:uuid:0.3.0")
 
     // Room components
     def roomVersion = "2.3.0"

@@ -35,7 +35,8 @@ object Fridge {
         val result = mutableListOf<Pair<Pack,Int>>()
         for ((meat, sizes) in content) {
             for ((size,amount) in sizes) {
-                result.add(Pair(Pack(meat,size), amount))
+                if (amount > 0)
+                    result.add(Pair(Pack(meat,size), amount))
             }
         }
         return result

@@ -14,9 +14,9 @@ class FeedingTest {
         val meatGrams = 250
         val carbs = Food(FoodType.CARBS, "Buchweizen")
         val carbGrams = 50
-        val feed = Feeding(listOf(Pair(meat, meatGrams), Pair(carbs, carbGrams)))
-        val fedCarbs = feed.ingredients.first { it.first.group == FoodType.CARBS }
-        assertThat(fedCarbs.first.name).isEqualTo("Buchweizen")
+        val feed = Feeding(listOf(Ingredient(meat, meatGrams), Ingredient(carbs, carbGrams)))
+        val fedCarbs = feed.ingredients.first { it.food.group == FoodType.CARBS }
+        assertThat(fedCarbs.food.name).isEqualTo("Buchweizen")
     }
 
     @Test
@@ -26,7 +26,7 @@ class FeedingTest {
         val meatGrams = 250
         val carbs = Food(FoodType.CARBS, "Buchweizen")
         val carbGrams = 50
-        val feed = Feeding(listOf(Pair(meat, meatGrams), Pair(carbs, carbGrams)), now)
+        val feed = Feeding(listOf(Ingredient(meat, meatGrams), Ingredient(carbs, carbGrams)), now)
         assertThat(feed.timeStamp).isEqualTo(now)
     }
 }

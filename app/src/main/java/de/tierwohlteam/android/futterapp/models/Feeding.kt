@@ -11,7 +11,14 @@ import kotlinx.datetime.toLocalDateTime
  * @property[timeStamp] when? default now
  */
 data class Feeding(
-    val ingredients: List<Pair<Food,Int>>,
+    val ingredients: List<Ingredient>,
     val timeStamp: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC),
 ) {
 }
+
+/**
+ * Ingredient of food
+ * @property[food] Food
+ * @property[gram] Int
+ */
+data class Ingredient(val food: Food, val gram: Int)

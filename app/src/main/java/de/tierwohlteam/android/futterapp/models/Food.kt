@@ -3,14 +3,14 @@ package de.tierwohlteam.android.futterapp.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "food"
-)
 /**
  * The food fed to the dog
  * @property[group] FoodType classification
  * @property[name] the actual food, e.g. carrot
  */
+@Entity(
+    tableName = "food"
+)
 data class Food(
     val group: FoodType,
     @PrimaryKey

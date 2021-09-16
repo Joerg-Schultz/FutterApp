@@ -34,4 +34,8 @@ object AppModule {
     @Provides
     fun provideFoodDao(db: FutterAppDB) = db.foodDao()
 
+    @Singleton
+    @Provides
+    fun provideMealDao(db: FutterAppDB) = db.mealDao()
+
 }

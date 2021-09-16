@@ -30,4 +30,9 @@ object TestAppModule {
     @Provides
     @Named("testFoodDao")
     fun provideFoodDao(db: FutterAppDB) = db.foodDao()
+
+    @Provides
+    @Named("testMealDao")
+    fun provideMealDao(db: FutterAppDB) = db.mealDao()
+
 }

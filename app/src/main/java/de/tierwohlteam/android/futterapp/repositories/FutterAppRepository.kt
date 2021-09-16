@@ -2,14 +2,17 @@ package de.tierwohlteam.android.futterapp.repositories
 
 import com.benasher44.uuid.Uuid
 import de.tierwohlteam.android.futterapp.models.Food
+import de.tierwohlteam.android.futterapp.models.Meal
 import de.tierwohlteam.android.futterapp.models.Rating
 import de.tierwohlteam.android.futterapp.repositories.daos.FoodDao
+import de.tierwohlteam.android.futterapp.repositories.daos.MealDao
 import de.tierwohlteam.android.futterapp.repositories.daos.RatingDao
 import javax.inject.Inject
 
 class FutterAppRepository @Inject constructor(
     private val ratingDao: RatingDao,
-    private val foodDao: FoodDao
+    private val foodDao: FoodDao,
+    private val mealDao: MealDao
 ) {
     /**
      * Rating functions
@@ -41,4 +44,12 @@ class FutterAppRepository @Inject constructor(
      * @param[ratingID] uuid of a rating
      */
     suspend fun getFoodByName(foodName: String): Food? = foodDao.getByName(foodName)
+
+    /**
+     * Meal function
+     */
+    /**
+     * Insert a Meal
+     */
+    suspend fun insertMeal(meal: Meal) = mealDao.insert(meal)
 }

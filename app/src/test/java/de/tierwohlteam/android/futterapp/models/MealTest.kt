@@ -17,8 +17,8 @@ class MealTest {
         val carbGrams = 50
         meal.addIngredient(meat, meatGrams)
         meal.addIngredient(carbs, carbGrams)
-        val mealMeat = meal.ingredients.filter { it.food.group == FoodType.MEAT }
-        assertThat(mealMeat.first().food).isEqualTo(meat)
+        val mealMeat = meal.ingredients.filter { it.foodName == "Rindermuskel" }
+        assertThat(mealMeat.first().foodName).isEqualTo(meat.name)
     }
 
     @Test

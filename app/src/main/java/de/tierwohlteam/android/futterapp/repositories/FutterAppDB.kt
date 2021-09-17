@@ -24,11 +24,11 @@ import kotlinx.datetime.toLocalDateTime
         Feeding::class,
         Ingredient::class,
     ],
-    version = 4,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
-abstract class FutterAppDB() : RoomDatabase() {
+abstract class FutterAppDB : RoomDatabase() {
     abstract fun ratingDao(): RatingDao
     abstract fun foodDao(): FoodDao
     abstract fun mealDao(): MealDao

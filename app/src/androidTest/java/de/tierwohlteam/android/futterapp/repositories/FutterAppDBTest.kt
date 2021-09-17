@@ -22,7 +22,6 @@ class FutterAppDBTest{
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    @Named("testDB")
     lateinit var db: FutterAppDB
 
     @Before

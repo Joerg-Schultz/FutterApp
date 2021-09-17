@@ -1,5 +1,6 @@
 package de.tierwohlteam.android.futterapp.models
 
+import com.benasher44.uuid.uuid4
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -11,14 +12,17 @@ class MealTest {
     @Test
     fun getIngredients() {
         val meal = Meal()
-        val meat = Food(FoodType.MEAT, "Rindermuskel")
+        val meatID = uuid4()
+        val meat = Food(FoodType.MEAT, "Rindermuskel", meatID)
         val meatGrams = 250
-        val carbs = Food(FoodType.CARBS, "Buchweizen")
+        val carbsID = uuid4()
+        val carbs = Food(id = carbsID, group = FoodType.CARBS, name = "Buchweizen")
         val carbGrams = 50
         meal.addIngredient(meat, meatGrams)
         meal.addIngredient(carbs, carbGrams)
-        val mealMeat = meal.ingredients.filter { it.foodName == "Rindermuskel" }
-        assertThat(mealMeat.first().foodName).isEqualTo(meat.name)
+        val mealMeat = meal.ingredients.firstOrNull() { it.foodID == meatID }
+        assertThat(mealMeat).isNotNull()
+        assertThat(mealMeat!!.gram).isEqualTo(meatGrams)
     }
 
     @Test

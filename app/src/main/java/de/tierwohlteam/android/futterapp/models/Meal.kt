@@ -19,7 +19,7 @@ data class Meal(
 ) {
     fun addIngredient(food: Food, gram: Int) {
         ingredients.add(
-            Ingredient(foodName = food.name, gram = gram, inFeeding = feeding.id))
+            Ingredient(foodID = food.id, gram = gram, inFeeding = feeding.id))
     }
 }
 
@@ -47,13 +47,13 @@ data class Feeding(
         ),
     ForeignKey(
         entity = Food::class,
-        parentColumns = arrayOf("name"),
-        childColumns = arrayOf("foodName")
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("foodID")
     )
     ]
 )
 data class Ingredient(
-    val foodName: String,
+    val foodID: Uuid,
     val gram: Int,
     @PrimaryKey
     val id: Uuid = uuid4(),

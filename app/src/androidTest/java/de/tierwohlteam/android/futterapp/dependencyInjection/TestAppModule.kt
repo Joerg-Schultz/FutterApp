@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
 import de.tierwohlteam.android.futterapp.repositories.FutterAppDB
 import org.junit.Test
 
@@ -14,25 +15,14 @@ import org.junit.Assert.*
 import javax.inject.Named
 
 @Module
-@InstallIn(SingletonComponent::class)
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [AppModule::class]
+)
 object TestAppModule {
     @Provides
-    @Named("testDB")
     fun provideInMemoryPTDdb(@ApplicationContext app: Context) =
         Room.inMemoryDatabaseBuilder(app, FutterAppDB::class.java)
             .allowMainThreadQueries()
             .build()
-
-    @Provides
-    @Named("testRatingDao")
-    fun provideRatingDao(db: FutterAppDB) = db.ratingDao()
-
-    @Provides
-    @Named("testFoodDao")
-    fun provideFoodDao(db: FutterAppDB) = db.foodDao()
-
-    @Provides
-    @Named("testMealDao")
-    fun provideMealDao(db: FutterAppDB) = db.mealDao()
-
 }

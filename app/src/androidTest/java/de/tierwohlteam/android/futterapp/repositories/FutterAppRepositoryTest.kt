@@ -33,7 +33,6 @@ class FutterAppRepositoryTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    @Named("testDB")
     lateinit var db: FutterAppDB
     @Inject
     lateinit var repository: FutterAppRepository
@@ -65,8 +64,8 @@ class FutterAppRepositoryTest {
         val carrot = Food(name = type, group = group)
         repository.insertFood(carrot)
         val dbCarrot = repository.getFoodByName("carrot")
-        assertThat(dbCarrot).isNotNull()
-        assertThat(dbCarrot).isEqualTo(carrot)
+        assertThat(dbCarrot).isNotEmpty()
+        assertThat(dbCarrot).isEqualTo(listOf(carrot))
     }
 
     @Test

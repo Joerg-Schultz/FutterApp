@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import de.tierwohlteam.android.futterapp.others.Constants.FUTTERAPP_DB_NAME
 import de.tierwohlteam.android.futterapp.repositories.FutterAppDB
+import de.tierwohlteam.android.futterapp.repositories.FutterAppRepository
 import javax.inject.Singleton
 
 @Module
@@ -25,6 +26,10 @@ object AppModule {
     ) //.allowMainThreadQueries() //devdebug only!!!!
         .fallbackToDestructiveMigration() // comment out in production
         .build()
+
+    @Singleton
+    @Provides
+    fun provideRepository(db: FutterAppDB) = FutterAppRepository(db)
 
     @Singleton
     @Provides

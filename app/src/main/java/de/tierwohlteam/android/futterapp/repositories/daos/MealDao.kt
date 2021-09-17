@@ -6,10 +6,8 @@ import androidx.room.Transaction
 import de.tierwohlteam.android.futterapp.models.Feeding
 import de.tierwohlteam.android.futterapp.models.Ingredient
 import de.tierwohlteam.android.futterapp.models.Meal
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @Dao
 interface MealDao {

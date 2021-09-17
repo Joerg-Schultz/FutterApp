@@ -28,15 +28,13 @@ class RatingDaoTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    @Named("testDB")
     lateinit var db: FutterAppDB
-    @Inject
-    @Named("testRatingDao")
-    lateinit var ratingDao: RatingDao
 
+    lateinit var ratingDao: RatingDao
     @Before
     internal fun setup() {
         hiltRule.inject()
+        ratingDao = db.ratingDao()
     }
     @After
     @Throws(IOException::class)

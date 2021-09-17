@@ -9,6 +9,7 @@ import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.models.Meal
 import de.tierwohlteam.android.futterapp.repositories.FutterAppDB
+import de.tierwohlteam.android.futterapp.repositories.FutterAppRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
@@ -30,15 +31,15 @@ class MealDaoTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    @Named("testDB")
     lateinit var db: FutterAppDB
     @Inject
-    @Named("testMealDao")
-    lateinit var mealDao: MealDao
+    lateinit var repository: FutterAppRepository
 
+    lateinit var mealDao: MealDao
     @Before
     internal fun setup() {
         hiltRule.inject()
+        mealDao = db.mealDao()
     }
     @After
     @Throws(IOException::class)
@@ -49,6 +50,7 @@ class MealDaoTest {
     @Test
     fun insertAndGetMeal() = runBlockingTest {
         val meal = Meal()
+        val dbMeat = repository.getFoodByNameAndType(type = FoodType.MEAT, name = "Rindermuskel")
         val meat = Food(FoodType.MEAT, "Rindermuskel")
         val meatGrams = 250
         val carbs = Food(FoodType.CARBS, "Buchweizen")

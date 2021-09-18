@@ -8,6 +8,7 @@ import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuidFrom
 import de.tierwohlteam.android.futterapp.models.*
 import de.tierwohlteam.android.futterapp.repositories.daos.FoodDao
+import de.tierwohlteam.android.futterapp.repositories.daos.FridgeDao
 import de.tierwohlteam.android.futterapp.repositories.daos.MealDao
 import de.tierwohlteam.android.futterapp.repositories.daos.RatingDao
 import kotlinx.datetime.LocalDateTime
@@ -23,6 +24,7 @@ import kotlinx.datetime.toLocalDateTime
         Food::class,
         Feeding::class,
         Ingredient::class,
+        Fridge.Drawer::class
     ],
     version = 2,
     exportSchema = true
@@ -32,6 +34,7 @@ abstract class FutterAppDB : RoomDatabase() {
     abstract fun ratingDao(): RatingDao
     abstract fun foodDao(): FoodDao
     abstract fun mealDao(): MealDao
+    abstract fun fridgeDao():FridgeDao
 }
 class Converters {
     @TypeConverter

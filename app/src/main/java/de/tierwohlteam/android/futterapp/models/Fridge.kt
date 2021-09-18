@@ -1,44 +1,62 @@
 package de.tierwohlteam.android.futterapp.models
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.Relation
+import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuid4
+
+
 /**
- * The content of the fridge (only packs)
- * object, as there is only one fridge per app
+ * food packages
+ * @property[food] Food
+ * @property[size] Int grams
+ */
+class Pack(val food: Food, val size:Int) {
+}
+
+/**
+ * how many of a pack is there in the fridge
+ * helper class to give names to the properties
+ * @property[pack]
+ * @property[amount]
+ */
+data class PacksInFridge(
+    val pack: Pack,
+    val amount: Int
+)
+
+/**
+ * The fridge containing packs of Food
+ * implemented as Object, no params
+ * There is also no Fridge unit test, as the functions depend on the database
  */
 object Fridge {
-    // Meat, gram, amount
-    private val content: MutableMap<String, MutableMap<Int, Int>> = mutableMapOf()
 
-    /**
-     * add one or more packs to the fridge
-     * @param[pack] What is added?
-     * @param[amount] How much is added (default 1)
-     */
-    fun addPack(pack: Pack, amount: Int = 1) {
-        val current = content.getOrDefault(pack.food.name, mutableMapOf(pack.size to 0)).getOrDefault(pack.size, 0)
-        content[pack.food.name] = mutableMapOf<Int,Int>(pack.size to current + amount)
-    }
+    @Entity(
+        tableName = "drawer"
+    )
+    data class Drawer(
+        val foodID: Uuid,
+        val packSize: Int,
+        val amount: Int,
+        @PrimaryKey
+        val id: Uuid = uuid4()
+    )
 
-    /**
-     * get a pack from the fridge
-     * @param[pack]
-     */
-    fun retrievePack(pack: Pack) {
-        val current = content.getOrDefault(pack.food.name, mutableMapOf(pack.size to 0)).getOrDefault(pack.size, 0)
-        content[pack.food.name] = mutableMapOf<Int,Int>(pack.size to if (current - 1 < 0) 0 else current - 1)
-    }
-
-    /**
-     * get the content of the fridge
-     * @returns List of Pair Pack and amount
-     */
-    fun content(): List<Pair<Pack,Int>> {
-        val result = mutableListOf<Pair<Pack,Int>>()
-        for ((meat, sizes) in content) {
-            for ((size,amount) in sizes) {
-                if (amount > 0)
-                    result.add(Pair(Pack(meat,size), amount))
-            }
-        }
-        return result
-    }
+    data class FoodInDrawer(
+        @Embedded
+        val drawer: Drawer,
+        @Relation(
+            parentColumn = "foodID",
+            entityColumn = "id"
+        )
+        val food: Food
+    )
+/*
+    fun content(): List<PacksInFridge> = repository.fridgeContent()
+    fun addPack(pack: Pack) = repository.addPackToFridge(pack)
+    fun getPack(pack: Pack): Boolean = repository.getPackFromFridge(pack)
+*/
 }

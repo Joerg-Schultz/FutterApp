@@ -81,13 +81,13 @@ class FutterAppRepositoryTest {
     }
 
     @Test
-    fun content() = runBlockingTest {
+    fun fridgeContent() = runBlockingTest {
         val content: List<PacksInFridge> = repository.fridgeContent()
         assertThat(content).isEmpty()
     }
 
     @Test
-    fun addPack() = runBlockingTest {
+    fun addPackToFridge() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
         val pack = Pack(food = food, size = 500)
         GlobalScope.launch {
@@ -102,7 +102,7 @@ class FutterAppRepositoryTest {
     }
 
     @Test
-    fun getPack() = runBlockingTest {
+    fun getPackFromFridge() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
         val pack = Pack(food = food, size = 500)
         GlobalScope.launch {

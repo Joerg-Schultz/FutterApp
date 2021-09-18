@@ -1,10 +1,7 @@
 package de.tierwohlteam.android.futterapp.repositories
 
 import com.benasher44.uuid.Uuid
-import de.tierwohlteam.android.futterapp.models.Food
-import de.tierwohlteam.android.futterapp.models.FoodType
-import de.tierwohlteam.android.futterapp.models.Meal
-import de.tierwohlteam.android.futterapp.models.Rating
+import de.tierwohlteam.android.futterapp.models.*
 import de.tierwohlteam.android.futterapp.repositories.daos.FoodDao
 import de.tierwohlteam.android.futterapp.repositories.daos.MealDao
 import de.tierwohlteam.android.futterapp.repositories.daos.RatingDao
@@ -16,7 +13,7 @@ class FutterAppRepository @Inject constructor(
     /**
      * Rating functions
      */
-    val ratingDao = database.ratingDao()
+    private val ratingDao = database.ratingDao()
     /**
      * Insert a rating
      * @param[rating] a new Rating
@@ -66,4 +63,30 @@ class FutterAppRepository @Inject constructor(
      * Insert a Meal
      */
     suspend fun insertMeal(meal: Meal) = mealDao.insert(meal)
+
+    /**
+     * Fridge functions
+     */
+    private val fridgeDao = database.fridgeDao()
+    /**
+     * get the current content
+     */
+    suspend fun fridgeContent() = fridgeDao.content()
+
+    /**
+     * add a pack to the fridge
+     * @param[pack] Pack
+     * @return PacksInFridge with updated count for this pack
+     */
+    suspend fun addPackToFridge(pack: Pack): PacksInFridge =
+        fridgeDao.addPack(pack)
+
+    /**
+     * get a pack from the fridge
+     * @param[pack]
+     * @return PacksInFridge with updated count for this pack
+     *          or null if there was no more pack in fridge
+     */
+    suspend fun getPackFromFridge(pack: Pack): PacksInFridge? =
+        fridgeDao.getPack(pack)
 }

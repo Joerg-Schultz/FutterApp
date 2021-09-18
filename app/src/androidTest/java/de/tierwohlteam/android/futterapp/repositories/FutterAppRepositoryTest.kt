@@ -6,11 +6,10 @@ import com.benasher44.uuid.uuid4
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import de.tierwohlteam.android.futterapp.models.Food
-import de.tierwohlteam.android.futterapp.models.FoodType
-import de.tierwohlteam.android.futterapp.models.Meal
-import de.tierwohlteam.android.futterapp.models.Rating
+import de.tierwohlteam.android.futterapp.models.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Test
@@ -81,4 +80,40 @@ class FutterAppRepositoryTest {
         assertThat(carbGrams).isEqualTo(50)
     }
 
+    @Test
+    fun content() = runBlockingTest {
+        val content: List<PacksInFridge> = repository.fridgeContent()
+        assertThat(content).isEmpty()
+    }
+
+    @Test
+    fun addPack() = runBlockingTest {
+        val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
+        val pack = Pack(food = food, size = 500)
+        GlobalScope.launch {
+            // food has to be inserted before pack (foreign key)
+            repository.insertFood(food)
+            val state = repository.addPackToFridge(pack)
+            assertThat(state).isNotNull()
+            assertThat(state.amount).isEqualTo(1)
+            val content = repository.fridgeContent()
+            assertThat(content).contains(PacksInFridge(pack, 1))
+        }
+    }
+
+    @Test
+    fun getPack() = runBlockingTest {
+        val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
+        val pack = Pack(food = food, size = 500)
+        GlobalScope.launch {
+            repository.insertFood(food)
+            repository.addPackToFridge(pack)
+            val content = repository.fridgeContent()
+            assertThat(content).contains(PacksInFridge(pack, 1))
+            val state = repository.getPackFromFridge(pack)
+            assertThat(state).isNotNull()
+            assertThat(state!!.amount).isEqualTo(0)
+            assertThat(repository.fridgeContent()).contains(PacksInFridge(pack, 0))
+        }
+    }
 }

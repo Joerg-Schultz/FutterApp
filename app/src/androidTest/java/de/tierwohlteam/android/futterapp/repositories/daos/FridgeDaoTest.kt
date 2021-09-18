@@ -5,9 +5,15 @@ import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import de.tierwohlteam.android.futterapp.models.Food
+import de.tierwohlteam.android.futterapp.models.FoodType
+import de.tierwohlteam.android.futterapp.models.Pack
 import de.tierwohlteam.android.futterapp.models.PacksInFridge
 import de.tierwohlteam.android.futterapp.repositories.FutterAppDB
+import de.tierwohlteam.android.futterapp.repositories.FutterAppRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
@@ -30,6 +36,9 @@ class FridgeDaoTest {
     @Inject
     lateinit var db: FutterAppDB
 
+    @Inject
+    lateinit var repository: FutterAppRepository
+
     lateinit var fridgeDao: FridgeDao
     @Before
     internal fun setup() {
@@ -46,5 +55,28 @@ class FridgeDaoTest {
     fun content() = runBlockingTest {
         val content: List<PacksInFridge> = fridgeDao.content()
         assertThat(content).isEmpty()
+    }
+
+    @Test
+    fun addPack() = runBlockingTest {
+        val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
+        val pack = Pack(food = food, size = 500)
+        GlobalScope.launch {
+            // food has to be inserted before pack (foreign key)
+            repository.insertFood(food)
+            fridgeDao.addPack(pack)
+            val content = fridgeDao.content()
+            assertThat(content).contains(PacksInFridge(pack, 1))
+        }
+    }
+
+    @Test
+    fun getPack() = runBlockingTest {
+        val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
+        val pack = Pack(food = food, size = 500)
+        GlobalScope.launch {
+            repository.insertFood(food)
+            fridgeDao.addPack(pack)
+        }
     }
 }

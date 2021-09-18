@@ -1,9 +1,6 @@
 package de.tierwohlteam.android.futterapp.models
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
+import androidx.room.*
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 
@@ -35,7 +32,13 @@ data class PacksInFridge(
 object Fridge {
 
     @Entity(
-        tableName = "drawer"
+        tableName = "drawer",
+        foreignKeys = [ForeignKey(
+            entity = Food::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("foodID")
+        )],
+        indices = [Index(value = ["foodID", "packSize"], unique = true)]
     )
     data class Drawer(
         val foodID: Uuid,

@@ -77,6 +77,12 @@ class FridgeDaoTest {
         GlobalScope.launch {
             repository.insertFood(food)
             fridgeDao.addPack(pack)
+            val content = fridgeDao.content()
+            assertThat(content).contains(PacksInFridge(pack, 1))
+            val state = fridgeDao.getPack(pack)
+            assertThat(state).isNotNull()
+            assertThat(state!!.amount).isEqualTo(0)
+            assertThat(fridgeDao.content()).contains(PacksInFridge(pack, 0))
         }
     }
 }

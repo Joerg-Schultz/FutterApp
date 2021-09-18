@@ -38,4 +38,18 @@ interface FridgeDao {
             id = currentDrawer?.id ?: uuid4()
         ))
     }
+
+    suspend fun getPack(pack: Pack): PacksInFridge? {
+        val currentDrawer = drawer(pack.food.id, pack.size)
+        return if (currentDrawer == null || currentDrawer.amount == 0) {
+            null
+        } else {
+            insertDrawer(Fridge.Drawer(foodID = pack.food.id,
+                packSize = pack.size,
+                amount = currentDrawer.amount - 1,
+                id = currentDrawer.id
+            ))
+            PacksInFridge(pack, currentDrawer.amount - 1)
+        }
+    }
 }

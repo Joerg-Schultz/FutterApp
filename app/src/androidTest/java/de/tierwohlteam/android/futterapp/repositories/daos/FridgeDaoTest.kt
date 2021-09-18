@@ -64,7 +64,9 @@ class FridgeDaoTest {
         GlobalScope.launch {
             // food has to be inserted before pack (foreign key)
             repository.insertFood(food)
-            fridgeDao.addPack(pack)
+            val state = fridgeDao.addPack(pack)
+            assertThat(state).isNotNull()
+            assertThat(state.amount).isEqualTo(1)
             val content = fridgeDao.content()
             assertThat(content).contains(PacksInFridge(pack, 1))
         }

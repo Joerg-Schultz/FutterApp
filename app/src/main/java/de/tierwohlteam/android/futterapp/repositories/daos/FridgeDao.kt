@@ -30,13 +30,15 @@ interface FridgeDao {
             PacksInFridge(Pack(it.food, it.drawer.packSize), it.drawer.amount)
         }
 
-    suspend fun addPack(pack: Pack) {
+    suspend fun addPack(pack: Pack): PacksInFridge {
         val currentDrawer = drawer(pack.food.id, pack.size)
+        val newAmount = (currentDrawer?.amount ?: 0) + 1
         insertDrawer(Fridge.Drawer(foodID = pack.food.id,
             packSize = pack.size,
-            amount = (currentDrawer?.amount ?: 0) + 1,
+            amount = newAmount,
             id = currentDrawer?.id ?: uuid4()
         ))
+        return PacksInFridge(pack, newAmount)
     }
 
     suspend fun getPack(pack: Pack): PacksInFridge? {

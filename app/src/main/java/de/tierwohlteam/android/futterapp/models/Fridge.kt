@@ -3,6 +3,9 @@ package de.tierwohlteam.android.futterapp.models
 import androidx.room.*
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
+import dagger.hilt.android.AndroidEntryPoint
+import de.tierwohlteam.android.futterapp.repositories.FutterAppRepository
+import javax.inject.Inject
 
 
 /**
@@ -26,8 +29,7 @@ data class PacksInFridge(
 
 /**
  * The fridge containing packs of Food
- * implemented as Object, no params
- * There is also no Fridge unit test, as the functions depend on the database
+ * access via repository functions
  */
 object Fridge {
 
@@ -57,9 +59,4 @@ object Fridge {
         )
         val food: Food
     )
-/*
-    fun content(): List<PacksInFridge> = repository.fridgeContent()
-    fun addPack(pack: Pack) = repository.addPackToFridge(pack)
-    fun getPack(pack: Pack): Boolean = repository.getPackFromFridge(pack)
-*/
 }

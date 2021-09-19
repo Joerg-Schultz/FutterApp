@@ -5,6 +5,7 @@ import de.tierwohlteam.android.futterapp.models.*
 import de.tierwohlteam.android.futterapp.repositories.daos.FoodDao
 import de.tierwohlteam.android.futterapp.repositories.daos.MealDao
 import de.tierwohlteam.android.futterapp.repositories.daos.RatingDao
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FutterAppRepository @Inject constructor(
@@ -26,6 +27,11 @@ class FutterAppRepository @Inject constructor(
      */
     suspend fun getRatingByID(ratingID: Uuid): Rating? = ratingDao.getByID(ratingID)
 
+    /**
+     * get all Ratings as Flow
+     */
+    val allRatings: Flow<List<Rating>>
+        get() = ratingDao.getAll()
 
     /**
      * Food functions

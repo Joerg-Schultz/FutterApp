@@ -9,17 +9,15 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import de.tierwohlteam.android.futterapp.models.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import java.io.IOException
 import javax.inject.Inject
-import javax.inject.Named
 
 @ExperimentalCoroutinesApi
 @SmallTest
@@ -54,6 +52,18 @@ class FutterAppRepositoryTest {
         val dbRating = repository.getRatingByID(ratingID)
         assertThat(dbRating).isNotNull()
         assertThat(dbRating).isEqualTo(rating)
+    }
+
+    @Test
+    fun getAllRating() = runBlockingTest {
+        val rating1 = Rating(value = 3, comment = "reasonable")
+        val rating2 = Rating(value = 5, comment = "excellent")
+        repository.insertRating(rating1)
+        repository.insertRating(rating2)
+        val ratingList = repository.allRatings.first()
+        assertThat(ratingList).isNotEmpty()
+        assertThat(ratingList).contains(rating1)
+        assertThat(ratingList).contains(rating2)
     }
 
     @Test

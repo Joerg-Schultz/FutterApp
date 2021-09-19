@@ -40,4 +40,11 @@ class RatingViewModelTest {
         val value = viewModel.insertRatingStatus.getOrAwaitValueTest()
         assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)
     }
+
+    @Test
+    fun insertNegativeRating() {
+        viewModel.insertRating(value = -3, comment = "gut")
+        val value = viewModel.insertRatingStatus.getOrAwaitValueTest()
+        assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.ERROR)
+    }
 }

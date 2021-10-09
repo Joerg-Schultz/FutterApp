@@ -4,4 +4,7 @@
     <string name="dog">Hund</string>
     <string name="meal">Essen</string>
     <string name="fridge">Kühlschrank</string>
+    <string name="description">Beschreibung</string>
+    <string name="addRating">New</string>
+    <string name="showRatings">List</string>
 </resources>

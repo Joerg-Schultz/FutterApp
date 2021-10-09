@@ -3,4 +3,8 @@
     <string name="dog">Dog</string>
     <string name="meal">Meal</string>
     <string name="fridge">Fridge</string>
+    <string name="rating">Rating</string>
+    <string name="description">Description</string>
+    <string name="addRating">New</string>
+    <string name="showRatings">List</string>
 </resources>

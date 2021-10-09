@@ -55,7 +55,7 @@ class FutterAppRepositoryTest {
     }
 
     @Test
-    fun getAllRating() = runBlockingTest {
+    fun getAllRatings() = runBlockingTest {
         val rating1 = Rating(value = 3, comment = "reasonable")
         val rating2 = Rating(value = 5, comment = "excellent")
         repository.insertRating(rating1)

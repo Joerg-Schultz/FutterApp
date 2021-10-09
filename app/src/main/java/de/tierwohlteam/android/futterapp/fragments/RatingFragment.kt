@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
@@ -14,6 +17,7 @@ import de.tierwohlteam.android.futterapp.adapters.RatingsViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.AddRatingFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.RatingFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.ShowRatingsFragmentBinding
+import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.viewModels.RatingViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -65,12 +69,41 @@ class AddRatingFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        subscribeToObservers()
         binding.fabAddRating.setOnClickListener {
             val rating = binding.ratingStars.rating.toInt()
             val comment = binding.tiRating.text.toString()
             ratingViewModel.insertRating(rating,comment)
         }
     }
+
+    private fun subscribeToObservers() {
+        //Did the insert work?
+        ratingViewModel.insertRatingStatus.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let { result ->
+                when (result.status) {
+                    Status.ERROR -> {
+                        Snackbar.make(
+                            binding.root,
+                            result.message ?: "Konnte Rating nicht speichern",
+                            Snackbar.LENGTH_LONG
+                        ).setAnchorView(R.id.fab_addRating)
+                            .show()
+                    }
+                    Status.SUCCESS -> {
+                        Snackbar.make(
+                            binding.root,
+                            "Rating gespeichert",
+                            Snackbar.LENGTH_LONG
+                        ).setAnchorView(R.id.fab_addRating)
+                            .show()
+                    }
+                    else -> { /* NO-OP */ }
+                }
+            }
+        })
+    }
+
 }
 
 class ShowRatingsFragment: Fragment() {

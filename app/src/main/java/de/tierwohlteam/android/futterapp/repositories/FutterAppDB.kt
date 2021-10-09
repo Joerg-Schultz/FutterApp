@@ -26,7 +26,7 @@ import kotlinx.datetime.toLocalDateTime
         Ingredient::class,
         Fridge.Drawer::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

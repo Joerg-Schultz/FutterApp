@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/nav_graph">
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/nav_graph"
+            app:startDestination="@+id/ratingFragment">
+
+    <fragment
+            android:id="@+id/ratingFragment"
+            android:name="de.tierwohlteam.android.futterapp.fragments.RatingFragment"
+            android:label="@string/dog"
+            tools:layout="@layout/rating_fragment">
+    </fragment>
+
+    <fragment
+            android:id="@+id/mealFragment"
+            android:name="de.tierwohlteam.android.futterapp.fragments.MealFragment"
+            android:label="@string/meal"
+            tools:layout="@layout/meal_fragment">
+    </fragment>
+
+    <fragment
+            android:id="@+id/fridgeFragment"
+            android:name="de.tierwohlteam.android.futterapp.fragments.FridgeFragment"
+            android:label="@string/fridge"
+            tools:layout="@layout/fridge_fragment">
+    </fragment>
+
 
 </navigation>

@@ -47,9 +47,12 @@ class RatingFragment: Fragment(R.layout.rating_fragment) {
     }
 }
 
+@ExperimentalCoroutinesApi
 class AddRatingFragment: Fragment() {
     private var _binding: AddRatingFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private val ratingViewModel: RatingViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,6 +61,15 @@ class AddRatingFragment: Fragment() {
         _binding = AddRatingFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.fabAddRating.setOnClickListener {
+            val rating = binding.ratingStars.rating.toInt()
+            val comment = binding.tiRating.text.toString()
+            ratingViewModel.insertRating(rating,comment)
+        }
     }
 }
 

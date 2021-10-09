@@ -5,6 +5,8 @@
     <string name="meal">Essen</string>
     <string name="fridge">Kühlschrank</string>
     <string name="description">Beschreibung</string>
-    <string name="addRating">New</string>
+    <string name="addRating">Neu</string>
     <string name="showRatings">List</string>
+    <string name="rating">Rating</string>
+    <string name="add">Hinzufügen</string>
 </resources>

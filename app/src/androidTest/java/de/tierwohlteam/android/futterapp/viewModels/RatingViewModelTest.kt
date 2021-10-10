@@ -29,6 +29,7 @@ import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 
 @ExperimentalCoroutinesApi
+@ExperimentalTime
 @SmallTest
 @HiltAndroidTest
 class RatingViewModelTest {
@@ -40,7 +41,7 @@ class RatingViewModelTest {
     lateinit var repository: FutterAppRepository
 
     // https://youtu.be/uEnpIFVspMo?t=1822
-    val dispatcher = TestCoroutineDispatcher()
+    private val dispatcher = TestCoroutineDispatcher()
     @Before
     fun setup() {
         hiltRule.inject()
@@ -51,8 +52,6 @@ class RatingViewModelTest {
         Dispatchers.resetMain()
     }
 
-    // TODO then adapt test
-    @OptIn(ExperimentalTime::class)
     @Test
     fun insertRatingTest() = runBlockingTest {
         val ratingViewModel = RatingViewModel(repository)
@@ -79,12 +78,11 @@ class RatingViewModelTest {
         insertJob.join()
 
         ratingViewModel.getAllRatings()
-        ratingViewModel.allRatings.collect { result ->
-            if (result.status == Status.SUCCESS) {
-                assertThat(result.status).isEqualTo(Status.LOADING)
-            } else {
-                assertThat(result.status).isEqualTo(Status.SUCCESS)
-            }
+        ratingViewModel.allRatings.test {
+            val resource = awaitItem()
+            assertThat(resource.status).isEqualTo(Status.SUCCESS)
+            assertThat(resource.data).hasSize(1)
+            assertThat(resource.data?.get(0)?.value).isEqualTo(rating)
         }
 
     }

@@ -2,6 +2,7 @@ package de.tierwohlteam.android.futterapp.repositories
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
+import app.cash.turbine.test
 import com.benasher44.uuid.uuid4
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -14,6 +15,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Test
@@ -21,6 +23,7 @@ import org.junit.Before
 import org.junit.Rule
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.time.ExperimentalTime
 
 @ExperimentalCoroutinesApi
 @SmallTest
@@ -57,28 +60,25 @@ class FutterAppRepositoryTest {
         assertThat(dbRating).isEqualTo(rating)
     }
 
-    /* Not working
-    I just do not understand howto test flows
-
     @Test
     fun getAllRatings() = runBlockingTest {
         val rating1 = Rating(value = 3F, comment = "reasonable")
         val rating2 = Rating(value = 5F, comment = "excellent")
-        repository.insertRating(rating1)
-        repository.insertRating(rating2)
-        var resourceList: List<Resource<List<Rating>>> = emptyList()
         val job = launch {
-            resourceList = repository.allRatings.toList()
+            repository.insertRating(rating1)
+            repository.insertRating(rating2)
         }
         job.join()
-        assertThat(resourceList[0].status).isEqualTo(Status.LOADING)
-        assertThat(resourceList[1].status).isEqualTo(Status.SUCCESS)
-        val ratingList = resourceList[1].data!!
-        assertThat(ratingList).isNotEmpty()
-        assertThat(ratingList).contains(rating1)
-        assertThat(ratingList).contains(rating2)
+        val repList: MutableList<Resource<List<Rating>>> = mutableListOf()
+        val job2 = launch {
+            repository.allRatings.toList(repList)
+        }
+        assertThat(repList).hasSize(2)
+        assertThat(repList[1].status).isEqualTo(Status.SUCCESS)
+        job2.cancel()
+
     }
-*/
+
     @Test
     fun insertAndGetFood() = runBlockingTest {
         val group = FoodType.VEGGIES_COOKED

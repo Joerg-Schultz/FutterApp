@@ -24,17 +24,17 @@ class RatingViewModel @Inject constructor(
     private val _insertRatingStatus = MutableLiveData<Event<Resource<Rating>>>(Event(Resource.empty()))
     val insertRatingStatus: LiveData<Event<Resource<Rating>>> = _insertRatingStatus
 
-    private val _allRatings: MutableStateFlow<Event<Resource<List<Rating>>>> =
-        MutableStateFlow(value = Event(Resource.empty()))
-    val allRatings: StateFlow<Event<Resource<List<Rating>>>> = _allRatings
+    private var _allRatings: MutableStateFlow<List<Rating>> =
+        MutableStateFlow(value = emptyList())
+    var allRatings: StateFlow<List<Rating>> = _allRatings
 
-    suspend fun getAllRatings() {
+    fun getAllRatings() {
         viewModelScope.launch {
             Log.d("RATINGS", "start collecting")
-            repository.allRatings.collect {
-                Log.d("RATINGS", "$it")
-                _allRatings.value = Event(Resource.success(it))
-            }
+            allRatings = repository.allRatings.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = emptyList())
         }
     }
 

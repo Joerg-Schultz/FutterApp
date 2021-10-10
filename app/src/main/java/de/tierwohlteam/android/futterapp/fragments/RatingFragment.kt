@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
+import de.tierwohlteam.android.futterapp.adapters.RatingsListAdapter
 import de.tierwohlteam.android.futterapp.adapters.RatingsViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.AddRatingFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.RatingFragmentBinding
@@ -20,7 +23,10 @@ import de.tierwohlteam.android.futterapp.databinding.ShowRatingsFragmentBinding
 import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.viewModels.RatingViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 
+@InternalCoroutinesApi
 @ExperimentalCoroutinesApi
 class RatingFragment: Fragment(R.layout.rating_fragment) {
     private val ratingViewModel: RatingViewModel by activityViewModels()
@@ -106,9 +112,15 @@ class AddRatingFragment: Fragment() {
 
 }
 
+@InternalCoroutinesApi
+@ExperimentalCoroutinesApi
 class ShowRatingsFragment: Fragment() {
+    private val ratingViewModel: RatingViewModel by activityViewModels()
+
     private var _binding: ShowRatingsFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var ratingsListAdapter: RatingsListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -118,4 +130,20 @@ class ShowRatingsFragment: Fragment() {
         val view = binding.root
         return view
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.rvRatings.apply {
+            ratingsListAdapter = RatingsListAdapter()
+            adapter = ratingsListAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+        ratingViewModel.getAllRatings()
+        lifecycleScope.launchWhenStarted {
+            ratingViewModel.allRatings.collect { list ->
+                if(! list.isNullOrEmpty()) ratingsListAdapter.submitList(list.sortedByDescending { it.timeStamp })
+            }
+        }
+    }
+
 }

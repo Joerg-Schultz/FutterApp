@@ -8,14 +8,10 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.tierwohlteam.android.futterapp.models.*
-import de.tierwohlteam.android.futterapp.others.Resource
 import de.tierwohlteam.android.futterapp.others.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Test
@@ -60,6 +56,7 @@ class FutterAppRepositoryTest {
         assertThat(dbRating).isEqualTo(rating)
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     fun getAllRatings() = runBlockingTest {
         val rating1 = Rating(value = 3F, comment = "reasonable")
@@ -69,14 +66,14 @@ class FutterAppRepositoryTest {
             repository.insertRating(rating2)
         }
         job.join()
-        val repList: MutableList<Resource<List<Rating>>> = mutableListOf()
-        val job2 = launch {
-            repository.allRatings.toList(repList)
+        repository.allRatings.test {
+            val loading = awaitItem()
+            assertThat(loading.status).isEqualTo(Status.LOADING)
+            val repResult = awaitItem()
+            assertThat(repResult.status).isEqualTo(Status.SUCCESS)
+            assertThat(repResult.data).hasSize(2)
+            assertThat(repResult.data).containsExactly(rating1, rating2)
         }
-        assertThat(repList).hasSize(2)
-        assertThat(repList[1].status).isEqualTo(Status.SUCCESS)
-        job2.cancel()
-
     }
 
     @Test

@@ -58,7 +58,7 @@ class FutterAppRepositoryTest {
 
     @OptIn(ExperimentalTime::class)
     @Test
-    fun getAllRatings() = runBlockingTest {
+    fun getAllRatingsTest() = runBlockingTest {
         val rating1 = Rating(value = 3F, comment = "reasonable")
         val rating2 = Rating(value = 5F, comment = "excellent")
         val job = launch {
@@ -73,6 +73,7 @@ class FutterAppRepositoryTest {
             assertThat(repResult.status).isEqualTo(Status.SUCCESS)
             assertThat(repResult.data).hasSize(2)
             assertThat(repResult.data).containsExactly(rating1, rating2)
+            cancelAndIgnoreRemainingEvents()
         }
     }
 

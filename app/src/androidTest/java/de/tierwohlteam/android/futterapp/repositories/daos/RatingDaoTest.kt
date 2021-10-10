@@ -49,7 +49,7 @@ class RatingDaoTest {
     @Throws(Exception::class)
     fun insertAndGetRating() = runBlockingTest {
         val ratingID = uuid4()
-        val rating = Rating(id = ratingID, value = 3, comment = "reasonable")
+        val rating = Rating(id = ratingID, value = 3.5F, comment = "reasonable")
         ratingDao.insert(rating)
         val dbRating = ratingDao.getByID(ratingID)
         assertThat(dbRating).isNotNull()
@@ -59,8 +59,8 @@ class RatingDaoTest {
     @Test
     @Throws(Exception::class)
     fun getAllRating() = runBlockingTest {
-        val rating1 = Rating(value = 3, comment = "reasonable")
-        val rating2 = Rating(value = 5, comment = "excellent")
+        val rating1 = Rating(value = 3F, comment = "reasonable")
+        val rating2 = Rating(value = 5F, comment = "excellent")
         ratingDao.insert(rating1)
         ratingDao.insert(rating2)
         val ratingList = ratingDao.getAll().first()

@@ -77,7 +77,7 @@ class AddRatingFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         subscribeToObservers()
         binding.fabAddRating.setOnClickListener {
-            val rating = binding.ratingStars.rating.toInt()
+            val rating = binding.ratingStars.rating
             val comment = binding.tiRating.text.toString()
             ratingViewModel.insertRating(rating,comment)
         }

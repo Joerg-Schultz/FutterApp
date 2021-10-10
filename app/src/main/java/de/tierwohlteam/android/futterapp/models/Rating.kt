@@ -20,6 +20,6 @@ data class Rating(
     @PrimaryKey
     val id: Uuid = uuid4(),
     val timeStamp: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC),
-    val value: Int,
+    val value: Float,
     val comment: String) {
 }

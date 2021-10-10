@@ -12,13 +12,13 @@ internal class RatingTest {
     @Test
     fun getTimeStamp() {
         val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
-        val rating = Rating(timeStamp = now, value = 3, comment = "good")
+        val rating = Rating(timeStamp = now, value = 3.5F, comment = "good")
         assertThat(rating.timeStamp).isEqualTo(now)
     }
 
     @Test
     fun getValue() {
-        val value = 3
+        val value = 3F
         val rating = Rating(value = value, comment = "good")
         assertThat(rating.value).isEqualTo(value)
     }
@@ -26,7 +26,7 @@ internal class RatingTest {
     @Test
     fun getComment() {
         val comment = "good"
-        val rating = Rating(value = 3, comment = comment)
+        val rating = Rating(value = 3.5F, comment = comment)
         assertThat(rating.comment).isEqualTo(comment)
     }
 }

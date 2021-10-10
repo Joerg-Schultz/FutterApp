@@ -47,7 +47,7 @@ class FutterAppRepositoryTest {
     @Test
     fun insertAndGetRating() = runBlockingTest {
         val ratingID = uuid4()
-        val rating = Rating(id = ratingID, value = 3, comment = "reasonable")
+        val rating = Rating(id = ratingID, value = 3F, comment = "reasonable")
         repository.insertRating(rating)
         val dbRating = repository.getRatingByID(ratingID)
         assertThat(dbRating).isNotNull()
@@ -56,8 +56,8 @@ class FutterAppRepositoryTest {
 
     @Test
     fun getAllRatings() = runBlockingTest {
-        val rating1 = Rating(value = 3, comment = "reasonable")
-        val rating2 = Rating(value = 5, comment = "excellent")
+        val rating1 = Rating(value = 3F, comment = "reasonable")
+        val rating2 = Rating(value = 5F, comment = "excellent")
         repository.insertRating(rating1)
         repository.insertRating(rating2)
         val ratingList = repository.allRatings.first()

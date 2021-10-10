@@ -38,7 +38,7 @@ class RatingViewModel @Inject constructor(
         }
     }
 
-    fun insertRating(value: Int, comment: String) {
+    fun insertRating(value: Float, comment: String) {
         if(value < 0) {
             _insertRatingStatus.postValue(Event(Resource.error("Rating has to be positive or null", null)))
             return

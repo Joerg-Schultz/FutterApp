@@ -138,10 +138,20 @@ class ShowRatingsFragment: Fragment() {
             adapter = ratingsListAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
-        ratingViewModel.getAllRatings()
         lifecycleScope.launchWhenStarted {
-            ratingViewModel.allRatings.collect { list ->
-                if(! list.isNullOrEmpty()) ratingsListAdapter.submitList(list.sortedByDescending { it.timeStamp })
+            ratingViewModel.getAllRatings()
+            ratingViewModel.allRatings.collect { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        binding.pBRatinglist.visibility = View.VISIBLE
+                    }
+                    Status.SUCCESS -> {
+                        binding.pBRatinglist.visibility = View.GONE
+                        result.data?.let { list ->
+                        ratingsListAdapter.submitList(list.sortedByDescending { it.timeStamp }) }
+                    }
+                    else -> { /* NO-OP */ }
+                }
             }
         }
     }

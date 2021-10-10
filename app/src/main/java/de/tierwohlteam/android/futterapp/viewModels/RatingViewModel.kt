@@ -28,7 +28,6 @@ class RatingViewModel @Inject constructor(
 
     fun getAllRatings() {
         viewModelScope.launch {
-            Log.d("RATINGS", "start collecting")
             allRatings = repository.allRatings.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
@@ -44,9 +43,7 @@ class RatingViewModel @Inject constructor(
         val rating = Rating(value = value, comment =  comment)
         viewModelScope.launch {
             repository.insertRating(rating)
-            Log.d("RATINGS", "insert Rating $value")
             _insertRatingStatus.postValue(Event(Resource.success(rating)))
-            Log.d("RATINGS", "inserted Rating $value")
         }
     }
 }

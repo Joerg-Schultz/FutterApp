@@ -34,7 +34,13 @@ class RatingsListAdapter: RecyclerView.Adapter<RatingsListAdapter.GoalViewHolder
     override fun onBindViewHolder(holder: RatingsListAdapter.GoalViewHolder, position: Int) {
         val rating = differ.currentList[position]
         holder.binding.ratingBar.rating = rating.value
-        holder.binding.tvDate.text = rating.timeStamp.toString()
+        val dayOfWeek = rating.timeStamp.dayOfWeek
+        val day = rating.timeStamp.dayOfMonth
+        val month = rating.timeStamp.monthNumber
+        val hour = rating.timeStamp.hour
+        val min = rating.timeStamp.minute
+        val dateString = "$dayOfWeek $day.$month $hour:$min"
+        holder.binding.tvDate.text = dateString
         holder.binding.tvDescription.text = rating.comment
         val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
         holder.itemView.layoutParams = params

@@ -25,6 +25,7 @@ import de.tierwohlteam.android.futterapp.viewModels.RatingViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
@@ -79,7 +80,9 @@ class AddRatingFragment: Fragment() {
         binding.fabAddRating.setOnClickListener {
             val rating = binding.ratingStars.rating
             val comment = binding.tiRating.text.toString()
-            ratingViewModel.insertRating(rating,comment)
+            lifecycleScope.launch {
+                ratingViewModel.insertRating(rating,comment)
+            }
         }
     }
 

@@ -88,31 +88,32 @@ class AddRatingFragment: Fragment() {
 
     private fun subscribeToObservers() {
         //Did the insert work?
-        ratingViewModel.insertRatingStatus.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.ERROR -> {
-                        Snackbar.make(
-                            binding.root,
-                            result.message ?: "Konnte Rating nicht speichern",
-                            Snackbar.LENGTH_LONG
-                        ).setAnchorView(R.id.fab_addRating)
-                            .show()
+        lifecycleScope.launch {
+            ratingViewModel.insertRatingFlow.collect {
+                it.getContentIfNotHandled()?.let { result ->
+                    when (result.status) {
+                        Status.ERROR -> {
+                            Snackbar.make(
+                                binding.root,
+                                result.message ?: "Konnte Rating nicht speichern",
+                                Snackbar.LENGTH_LONG
+                            ).setAnchorView(R.id.fab_addRating)
+                                .show()
+                        }
+                        Status.SUCCESS -> {
+                            Snackbar.make(
+                                binding.root,
+                                "Rating gespeichert",
+                                Snackbar.LENGTH_LONG
+                            ).setAnchorView(R.id.fab_addRating)
+                                .show()
+                        }
+                        else -> { /* NO-OP */ }
                     }
-                    Status.SUCCESS -> {
-                        Snackbar.make(
-                            binding.root,
-                            "Rating gespeichert",
-                            Snackbar.LENGTH_LONG
-                        ).setAnchorView(R.id.fab_addRating)
-                            .show()
-                    }
-                    else -> { /* NO-OP */ }
                 }
             }
-        })
+        }
     }
-
 }
 
 @InternalCoroutinesApi

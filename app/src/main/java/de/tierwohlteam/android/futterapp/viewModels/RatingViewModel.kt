@@ -21,10 +21,9 @@ class RatingViewModel @Inject constructor(
     private val repository: FutterAppRepository,
 ) : ViewModel() {
 
-    private val _insertRatingStatus = MutableLiveData<Event<Resource<Rating>>>(Event(Resource.empty()))
-    val insertRatingStatus: LiveData<Event<Resource<Rating>>> = _insertRatingStatus
-
     var allRatings: StateFlow<Resource<List<Rating>>> = MutableStateFlow(Resource.empty())
+    private val _insertRatingFlow: MutableStateFlow<Event<Resource<Rating>>> = MutableStateFlow(Event(Resource.empty()))
+    val insertRatingFlow = _insertRatingFlow as StateFlow<Event<Resource<Rating>>>
 
     fun getAllRatings() {
         viewModelScope.launch {
@@ -37,13 +36,13 @@ class RatingViewModel @Inject constructor(
 
     suspend fun insertRating(value: Float, comment: String) {
         if(value < 0) {
-            _insertRatingStatus.postValue(Event(Resource.error("Rating has to be positive or null", null)))
+            _insertRatingFlow.value = Event(Resource.error("Rating has to be positive or null", null))
             return
         }
         val rating = Rating(value = value, comment =  comment)
         viewModelScope.launch {
             repository.insertRating(rating)
-            _insertRatingStatus.postValue(Event(Resource.success(rating)))
+            _insertRatingFlow.value = Event(Resource.success(rating))
         }
     }
 }

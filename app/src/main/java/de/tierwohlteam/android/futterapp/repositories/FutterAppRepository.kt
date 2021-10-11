@@ -42,15 +42,7 @@ class FutterAppRepository @Inject constructor(
     /**
      * Food functions
      */
-    /**
-     * Food functions
-     */
     private val foodDao = database.foodDao()
-    /**
-     * Insert a Food
-     * make sure, that the id is correct!
-     * @param[food] a new Food
-     */
     /**
      * Insert a Food
      * make sure, that the id is correct!
@@ -64,21 +56,8 @@ class FutterAppRepository @Inject constructor(
      * @param[name] name of the food
      * @return[Food]
      */
-    /**
-     * get a food and insert it if not yet in DB
-     * @param[type] FoodType
-     * @param[name] name of the food
-     * @return[Food]
-     */
     suspend fun getFoodByNameAndType(type: FoodType, name: String): Food = foodDao.getAndInsert(group = type, name = name)
 
-
-    /**
-     * get list of food by its Name
-     * returns list as carrots can be cooked and raw
-     * @param[foodName] string
-     * @return List of Food
-     */
     /**
      * get list of food by its Name
      * returns list as carrots can be cooked and raw
@@ -90,13 +69,8 @@ class FutterAppRepository @Inject constructor(
     /**
      * Meal function
      */
-    /**
-     * Meal function
-     */
     private val mealDao = database.mealDao()
-    /**
-     * Insert a Meal
-     */
+
     /**
      * Insert a Meal
      */
@@ -105,13 +79,8 @@ class FutterAppRepository @Inject constructor(
     /**
      * Fridge functions
      */
-    /**
-     * Fridge functions
-     */
     private val fridgeDao = database.fridgeDao()
-    /**
-     * get the current content
-     */
+
     /**
      * get the current content
      */
@@ -122,20 +91,9 @@ class FutterAppRepository @Inject constructor(
      * @param[pack] Pack
      * @return PacksInFridge with updated count for this pack
      */
-    /**
-     * add a pack to the fridge
-     * @param[pack] Pack
-     * @return PacksInFridge with updated count for this pack
-     */
     suspend fun addPackToFridge(pack: Pack): PacksInFridge =
         fridgeDao.addPack(pack)
 
-    /**
-     * get a pack from the fridge
-     * @param[pack]
-     * @return PacksInFridge with updated count for this pack
-     *          or null if there was no more pack in fridge
-     */
     /**
      * get a pack from the fridge
      * @param[pack]

@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.MealItemBinding
 import de.tierwohlteam.android.futterapp.fragments.AddMealFragment
-import de.tierwohlteam.android.futterapp.models.Ingredient
-import de.tierwohlteam.android.futterapp.models.Rating
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -24,7 +22,7 @@ class MealListAdapter: RecyclerView.Adapter<MealListAdapter.GoalViewHolder>() {
         }
     }
     private val differ = AsyncListDiffer(this, diffCallback)
-    fun submitList(list: MutableList<AddMealFragment.MealComponent>) = differ.submitList(list)
+    fun submitList(list: List<AddMealFragment.MealComponent>) = differ.submitList(list)
 
 
     inner class GoalViewHolder(val binding: MealItemBinding) : RecyclerView.ViewHolder(binding.root)

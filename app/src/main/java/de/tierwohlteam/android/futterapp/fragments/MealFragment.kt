@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.benasher44.uuid.Uuid
@@ -24,6 +25,9 @@ import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 
 @ExperimentalCoroutinesApi
 class MealFragment: Fragment(R.layout.meal_fragment) {
@@ -70,7 +74,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
 
     private val mealViewModel: MealViewModel by activityViewModels()
     private lateinit var mealListAdapter: MealListAdapter
-    private val ingredientList = mutableListOf<MealComponent>()
+    private val ingredientList: MutableStateFlow<List<MealComponent>> = MutableStateFlow(emptyList())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,7 +92,6 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             adapter = mealListAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
-        mealListAdapter.submitList(ingredientList)
         binding.btnAddingredient.setOnClickListener {
             selectGroup(it.context)
             // set ingredient
@@ -100,6 +103,11 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
                 "Selected Group: $currentFoodGroup; Name: $currentFoodName; Gram: $currentGram",
                 Snackbar.LENGTH_LONG
             ).show()
+        }
+        lifecycleScope.launchWhenStarted {
+            ingredientList.collect {
+                mealListAdapter.submitList(it)
+            }
         }
     }
     private fun selectGroup(context: Context) {
@@ -159,6 +167,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             .setPositiveButton("OK") { dialog, which->
                 currentGram = currentSelection
                 val newComponent = MealComponent(FoodType.MEAT, currentFoodName, null, currentGram)
+                ingredientList.value = ingredientList.value + newComponent
             }
             .setNeutralButton("Cancel") { dialog, which ->
                 currentGram = 0

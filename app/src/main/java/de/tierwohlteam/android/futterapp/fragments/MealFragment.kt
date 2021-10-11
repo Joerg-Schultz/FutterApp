@@ -1,5 +1,6 @@
 package de.tierwohlteam.android.futterapp.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,17 +8,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
 import de.tierwohlteam.android.futterapp.adapters.RatingsViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.AddMealFragmentBinding
-import de.tierwohlteam.android.futterapp.databinding.AddRatingFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
-import de.tierwohlteam.android.futterapp.viewModels.RatingViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class MealFragment: Fragment(R.layout.meal_fragment) {
     private var _binding: MealFragmentBinding? = null
     private val binding get() = _binding!!
@@ -59,6 +61,51 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.btnAddingredient.setOnClickListener {
+            selectGroup(it.context)
+            // set ingredient
+            // set grams
+        }
+    }
+    private fun selectGroup(context: Context) {
+        val singleItems = listOf(R.string.meat, R.string.carbs, R.string.veggies, R.string.others)
+            .map { resources.getString(it) }.toTypedArray()
+        val checkedItem = 0
+        MaterialAlertDialogBuilder(context)
+            .setTitle(resources.getString(R.string.select_group))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
+                // Respond to positive button press
+                selectIngredient(context)
+            }
+            // Single-choice items (initialized with checked item)
+            .setSingleChoiceItems(singleItems, checkedItem) { dialog, which ->
+                val selectedGroup = singleItems[which]
+            }
+            .show()
+    }
 
+    private fun selectIngredient(context: Context) {
+        val singleItems = listOf("eins", "zwei", "drei")
+            .toTypedArray()
+        val checkedItem = 0
+        MaterialAlertDialogBuilder(context)
+            .setTitle(resources.getString(R.string.select_ingredient))
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
+                // Respond to positive button press
+            }
+            // Single-choice items (initialized with checked item)
+            .setSingleChoiceItems(singleItems, checkedItem) { dialog, which ->
+                val selectedGroup = singleItems[which]
+            }
+            .show()
+    }
 }
 

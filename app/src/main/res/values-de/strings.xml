@@ -22,4 +22,8 @@
     <string name="veggies">Gemüse</string>
     <string name="others">Anderes</string>
     <string name="addMeal">New</string>
+    <string name="select_group">Select Group</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="select_ingredient">Select Ingredient</string>
 </resources>

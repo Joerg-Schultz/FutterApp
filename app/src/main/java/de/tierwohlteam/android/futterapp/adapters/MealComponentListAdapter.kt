@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import de.tierwohlteam.android.futterapp.databinding.MealItemBinding
+import de.tierwohlteam.android.futterapp.databinding.MealComponentItemBinding
 import de.tierwohlteam.android.futterapp.fragments.AddMealFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -25,10 +25,10 @@ class MealComponentListAdapter: RecyclerView.Adapter<MealComponentListAdapter.Go
     fun submitList(list: List<AddMealFragment.MealComponent>) = differ.submitList(list)
 
 
-    inner class GoalViewHolder(val binding: MealItemBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class GoalViewHolder(val binding: MealComponentItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealComponentListAdapter.GoalViewHolder {
-        val binding = MealItemBinding.inflate(
+        val binding = MealComponentItemBinding.inflate(
             LayoutInflater.from(parent.context), parent, false)
         return GoalViewHolder(binding)
     }

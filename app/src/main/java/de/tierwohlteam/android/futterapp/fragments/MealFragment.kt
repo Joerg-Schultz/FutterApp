@@ -7,16 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
+import com.benasher44.uuid.Uuid
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
+import de.tierwohlteam.android.futterapp.adapters.MealListAdapter
 import de.tierwohlteam.android.futterapp.adapters.MealViewPagerAdapter
-import de.tierwohlteam.android.futterapp.adapters.RatingsViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.AddMealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
+import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -51,7 +53,18 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
     private var _binding: AddMealFragmentBinding? = null
     private val binding get() = _binding!!
 
+    inner class MealComponent(
+        val foodGroup: FoodType,
+        val foodName: String,
+        val foodID: Uuid?,
+        val gram: Int
+    ) {
+
+    }
+
     private val mealViewModel: MealViewModel by activityViewModels()
+    private lateinit var mealListAdapter: MealListAdapter
+    private val ingredientList = mutableListOf<MealComponent>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,6 +77,12 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.rvMeal.apply {
+            mealListAdapter = MealListAdapter()
+            adapter = mealListAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+        mealListAdapter.submitList(ingredientList)
         binding.btnAddingredient.setOnClickListener {
             selectGroup(it.context)
             // set ingredient

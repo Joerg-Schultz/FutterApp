@@ -29,10 +29,12 @@ data class Food(
  * carbs
  * cooked veggies
  * raw veggies
+ * other stuff
  */
 enum class FoodType {
     MEAT,
     CARBS,
     VEGGIES_COOKED,
-    VEGGIES_RAW
+    VEGGIES_RAW,
+    OTHERS
 }

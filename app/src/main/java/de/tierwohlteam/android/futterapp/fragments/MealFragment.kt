@@ -26,7 +26,6 @@ import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 
 @ExperimentalCoroutinesApi
@@ -68,7 +67,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
     ) {
 
     }
-    private var currentFoodGroup = ""
+    private var currentFoodType: FoodType? = null
     private var currentFoodName = ""
     private var currentGram = 0
 
@@ -100,7 +99,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         binding.btnSavemeal.setOnClickListener {
             Snackbar.make(
                 binding.root,
-                "Selected Group: $currentFoodGroup; Name: $currentFoodName; Gram: $currentGram",
+                "Selected Group: $currentFoodType; Name: $currentFoodName; Gram: $currentGram",
                 Snackbar.LENGTH_LONG
             ).show()
         }
@@ -111,20 +110,20 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         }
     }
     private fun selectGroup(context: Context) {
-        val foodGroups = listOf(R.string.meat, R.string.carbs, R.string.veggies, R.string.others)
-            .map { resources.getString(it) }.toTypedArray()
-        val checkedItem = 0
-        currentFoodGroup = foodGroups[checkedItem]
+        val foodGroups = FoodType.values().map { translateFoodType(it) }.toTypedArray()
+        val foodMap = FoodType.values().associateWith { translateFoodType(it) }
+        val checkedItem = foodGroups.indexOf(resources.getString(R.string.others))
+        currentFoodType = FoodType.OTHERS
         MaterialAlertDialogBuilder(context)
             .setTitle(resources.getString(R.string.select_group))
             .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
-                currentFoodGroup = ""
+                currentFoodType = null
             }
             .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
                 selectIngredient(context)
             }
-            .setSingleChoiceItems(foodGroups, checkedItem) { dialog, which ->
-                currentFoodGroup = foodGroups[which]
+            .setSingleChoiceItems(foodMap.values.toTypedArray(), checkedItem) { dialog, which ->
+                currentFoodType  = foodMap.filterValues { it == foodMap.values.toTypedArray()[which] }.keys.first()
             }
             .show()
     }
@@ -166,8 +165,10 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             .setTitle("Grams")
             .setPositiveButton("OK") { dialog, which->
                 currentGram = currentSelection
-                val newComponent = MealComponent(FoodType.MEAT, currentFoodName, null, currentGram)
-                ingredientList.value = ingredientList.value + newComponent
+                if( currentFoodType != null) {
+                    val newComponent = MealComponent(currentFoodType!!, currentFoodName, null, currentGram)
+                    ingredientList.value = ingredientList.value + newComponent
+                }
             }
             .setNeutralButton("Cancel") { dialog, which ->
                 currentGram = 0
@@ -175,5 +176,14 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             .setView(numberPicker)
             .show()
     }
+
+    fun translateFoodType(type: FoodType): String =
+        when (type) {
+            FoodType.MEAT -> resources.getString(R.string.meat)
+            FoodType.CARBS -> resources.getString(R.string.carbs)
+            FoodType.VEGGIES_COOKED -> resources.getString(R.string.veggiesCooked)
+            FoodType.VEGGIES_RAW -> resources.getString(R.string.veggiesRaw)
+            FoodType.OTHERS -> resources.getString((R.string.others))
+        }
 }
 

@@ -11,5 +11,4 @@ import javax.inject.Inject
 class MealViewModel @Inject constructor(
     private val repository: FutterAppRepository,
 ) : ViewModel() {
-
 }

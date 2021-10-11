@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.MealItemBinding
 import de.tierwohlteam.android.futterapp.fragments.AddMealFragment
+import de.tierwohlteam.android.futterapp.fragments.MealFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -36,6 +37,7 @@ class MealListAdapter: RecyclerView.Adapter<MealListAdapter.GoalViewHolder>() {
     override fun onBindViewHolder(holder: MealListAdapter.GoalViewHolder, position: Int) {
         val component = differ.currentList[position]
         holder.binding.apply {
+            // TODO translate FoodType AddMealFragment().translateFoodType
             tvGroup.text = component.foodGroup.toString()
             tvIngredient.text = component.foodName
             tvGram.text = component.gram.toString()

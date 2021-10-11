@@ -20,7 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
-import de.tierwohlteam.android.futterapp.adapters.MealListAdapter
+import de.tierwohlteam.android.futterapp.adapters.MealComponentListAdapter
 import de.tierwohlteam.android.futterapp.adapters.MealViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.AddMealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
@@ -76,7 +76,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
     private var currentGram = 0
 
     private val mealViewModel: MealViewModel by activityViewModels()
-    private lateinit var mealListAdapter: MealListAdapter
+    private lateinit var mealComponentListAdapter: MealComponentListAdapter
     private val ingredientList: MutableStateFlow<List<MealComponent>> = MutableStateFlow(emptyList())
 
     override fun onCreateView(
@@ -91,8 +91,8 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvMeal.apply {
-            mealListAdapter = MealListAdapter()
-            adapter = mealListAdapter
+            mealComponentListAdapter = MealComponentListAdapter()
+            adapter = mealComponentListAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
         binding.btnAddingredient.setOnClickListener {
@@ -107,7 +107,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         }
         lifecycleScope.launchWhenStarted {
             ingredientList.collect {
-                mealListAdapter.submitList(it)
+                mealComponentListAdapter.submitList(it)
             }
         }
         lifecycleScope.launchWhenStarted {

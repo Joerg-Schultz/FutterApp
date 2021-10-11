@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -129,21 +131,32 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
     }
 
     private fun selectIngredient(context: Context) {
+        val foodNameInput = EditText(context)
+        foodNameInput.apply {
+            setHint("new food")
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setPadding(20, 20, 20, 20)
+        }
         val foodNames = listOf("eins", "zwei", "drei")
             .toTypedArray()
-        val checkedItem = 0
-        currentFoodName = foodNames[checkedItem]
         MaterialAlertDialogBuilder(context)
             .setTitle(resources.getString(R.string.select_ingredient))
             .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
                 currentFoodName = ""
             }
             .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
+                if (!foodNameInput.text.isNullOrBlank()) {
+                    currentFoodName = foodNameInput.text.toString()
+                }
                 selectGram(context)
             }
-            .setSingleChoiceItems(foodNames, checkedItem) { dialog, which ->
+            .setSingleChoiceItems(foodNames, -1) { dialog, which ->
                 currentFoodName = foodNames[which]
             }
+            .setView(foodNameInput)
             .show()
     }
 

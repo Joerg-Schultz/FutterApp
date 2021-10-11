@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
+import de.tierwohlteam.android.futterapp.adapters.MealViewPagerAdapter
 import de.tierwohlteam.android.futterapp.adapters.RatingsViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.AddMealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
@@ -35,7 +36,7 @@ class MealFragment: Fragment(R.layout.meal_fragment) {
         val fragmentTitleList: Map<String,Fragment> = mapOf(
             getString(R.string.addMeal) to AddMealFragment(),
         )
-        viewPager2.adapter = RatingsViewPagerAdapter(this.childFragmentManager, lifecycle,
+        viewPager2.adapter = MealViewPagerAdapter(this.childFragmentManager, lifecycle,
             ArrayList(fragmentTitleList.values)
         )
 

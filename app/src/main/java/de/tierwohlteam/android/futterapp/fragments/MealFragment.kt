@@ -25,10 +25,12 @@ import de.tierwohlteam.android.futterapp.adapters.MealViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.AddMealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
 import de.tierwohlteam.android.futterapp.models.FoodType
+import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 class MealFragment: Fragment(R.layout.meal_fragment) {
@@ -99,15 +101,29 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             // set grams
         }
         binding.btnSavemeal.setOnClickListener {
-            Snackbar.make(
-                binding.root,
-                "Selected Group: $currentFoodType; Name: $currentFoodName; Gram: $currentGram",
-                Snackbar.LENGTH_LONG
-            ).show()
+            lifecycleScope.launch {
+                mealViewModel.saveMeal(ingredientList.value)
+            }
         }
         lifecycleScope.launchWhenStarted {
             ingredientList.collect {
                 mealListAdapter.submitList(it)
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            mealViewModel.insertMealFlow.collect { result ->
+                val resource = result.getContentIfNotHandled()
+                if (resource != null) {
+                    when (resource.status) {
+                        Status.SUCCESS -> {
+                            Snackbar.make(binding.root,"Inserted Meal", Snackbar.LENGTH_LONG).show()
+                        }
+                        Status.ERROR -> {
+                            Snackbar.make(binding.root,"Could not insert Meal", Snackbar.LENGTH_LONG).show()
+                        }
+                        else -> { /* NO-OP */ }
+                    }
+                }
             }
         }
     }

@@ -1,16 +1,19 @@
 package de.tierwohlteam.android.futterapp.fragments
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.benasher44.uuid.Uuid
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
@@ -61,6 +64,9 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
     ) {
 
     }
+    private var currentFoodGroup = ""
+    private var currentFoodName = ""
+    private var currentGram = 0
 
     private val mealViewModel: MealViewModel by activityViewModels()
     private lateinit var mealListAdapter: MealListAdapter
@@ -88,43 +94,76 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             // set ingredient
             // set grams
         }
+        binding.btnSavemeal.setOnClickListener {
+            Snackbar.make(
+                binding.root,
+                "Selected Group: $currentFoodGroup; Name: $currentFoodName; Gram: $currentGram",
+                Snackbar.LENGTH_LONG
+            ).show()
+        }
     }
     private fun selectGroup(context: Context) {
-        val singleItems = listOf(R.string.meat, R.string.carbs, R.string.veggies, R.string.others)
+        val foodGroups = listOf(R.string.meat, R.string.carbs, R.string.veggies, R.string.others)
             .map { resources.getString(it) }.toTypedArray()
         val checkedItem = 0
+        currentFoodGroup = foodGroups[checkedItem]
         MaterialAlertDialogBuilder(context)
             .setTitle(resources.getString(R.string.select_group))
             .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
-                // Respond to neutral button press
+                currentFoodGroup = ""
             }
             .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
-                // Respond to positive button press
                 selectIngredient(context)
             }
-            // Single-choice items (initialized with checked item)
-            .setSingleChoiceItems(singleItems, checkedItem) { dialog, which ->
-                val selectedGroup = singleItems[which]
+            .setSingleChoiceItems(foodGroups, checkedItem) { dialog, which ->
+                currentFoodGroup = foodGroups[which]
             }
             .show()
     }
 
     private fun selectIngredient(context: Context) {
-        val singleItems = listOf("eins", "zwei", "drei")
+        val foodNames = listOf("eins", "zwei", "drei")
             .toTypedArray()
         val checkedItem = 0
+        currentFoodName = foodNames[checkedItem]
         MaterialAlertDialogBuilder(context)
             .setTitle(resources.getString(R.string.select_ingredient))
             .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
-                // Respond to neutral button press
+                currentFoodName = ""
             }
             .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
-                // Respond to positive button press
+                selectGram(context)
             }
-            // Single-choice items (initialized with checked item)
-            .setSingleChoiceItems(singleItems, checkedItem) { dialog, which ->
-                val selectedGroup = singleItems[which]
+            .setSingleChoiceItems(foodNames, checkedItem) { dialog, which ->
+                currentFoodName = foodNames[which]
             }
+            .show()
+    }
+
+    private fun selectGram(context: Context) {
+        val numberPicker = NumberPicker(context)
+        val gramSteps = (50..500 step 50).toList()
+        var currentSelection = 250
+        numberPicker.apply {
+            wrapSelectorWheel = true
+            minValue = 0
+            maxValue = gramSteps.lastIndex
+            displayedValues = gramSteps.map { it.toString() }.toTypedArray()
+            value = gramSteps.lastIndex / 2
+            setOnValueChangedListener { picker, oldVal, newVal ->
+                currentSelection = gramSteps[newVal]
+            }
+        }
+        AlertDialog.Builder(context)
+            .setTitle("Grams")
+            .setPositiveButton("OK") { dialog, which->
+                currentGram = currentSelection
+                val newComponent = MealComponent(FoodType.MEAT, currentFoodName, null, currentGram)
+            }
+            .setNeutralButton("Cancel") { dialog, which ->
+                currentGram = 0
+            }
+            .setView(numberPicker)
             .show()
     }
 }

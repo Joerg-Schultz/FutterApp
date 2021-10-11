@@ -9,5 +9,16 @@
     <string name="showRatings">List</string>
     <string name="rating">Rating</string>
     <string name="add">Hinzufügen</string>
-    <string name="date">Date</string>
+    <string name="date">Datum</string>
+    <string name="meat">Fleisch</string>
+    <string name="group">Gruppe</string>
+    <string name="ingredient">Bestandteil</string>
+    <string name="gram">Gramm</string>
+    <string name="carbs">Carbs</string>
+    <string name="delete">Löschen</string>
+    <string name="add_ingredient">Bestandteil hinzufügen</string>
+    <string name="save">Speichern</string>
+    <string name="add_component">Bestandteil hinzufügen</string>
+    <string name="veggies">Gemüse</string>
+    <string name="others">Anderes</string>
 </resources>

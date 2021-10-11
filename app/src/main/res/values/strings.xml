@@ -20,4 +20,5 @@
     <string name="add_component">Add Component</string>
     <string name="veggies">Vegetables</string>
     <string name="others">Others</string>
+    <string name="addMeal">New</string>
 </resources>

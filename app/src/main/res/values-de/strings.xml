@@ -21,4 +21,5 @@
     <string name="add_component">Bestandteil hinzufügen</string>
     <string name="veggies">Gemüse</string>
     <string name="others">Anderes</string>
+    <string name="addMeal">New</string>
 </resources>

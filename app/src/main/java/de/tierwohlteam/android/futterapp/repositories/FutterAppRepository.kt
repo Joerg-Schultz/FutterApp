@@ -3,9 +3,6 @@ package de.tierwohlteam.android.futterapp.repositories
 import com.benasher44.uuid.Uuid
 import de.tierwohlteam.android.futterapp.models.*
 import de.tierwohlteam.android.futterapp.others.Resource
-import de.tierwohlteam.android.futterapp.repositories.daos.FoodDao
-import de.tierwohlteam.android.futterapp.repositories.daos.MealDao
-import de.tierwohlteam.android.futterapp.repositories.daos.RatingDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow

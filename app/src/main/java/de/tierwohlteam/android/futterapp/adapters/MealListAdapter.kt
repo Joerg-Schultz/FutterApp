@@ -2,6 +2,8 @@ package de.tierwohlteam.android.futterapp.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +35,29 @@ class MealListAdapter: RecyclerView.Adapter<MealListAdapter.GoalViewHolder>() {
 
     override fun onBindViewHolder(holder: MealListAdapter.GoalViewHolder, position: Int) {
         val meal = differ.currentList[position]
-        holder.binding.tvMeal.text = meal.feeding.time.toString()
+        val timeStamp = meal.feeding.time
+        val dayOfWeek = timeStamp.dayOfWeek
+        val day = timeStamp.dayOfMonth
+        val month = timeStamp.monthNumber
+        val hour = timeStamp.hour
+        val min = timeStamp.minute
+        val dateString = "$dayOfWeek $day.$month $hour:$min"
+        holder.binding.tvDate.text = dateString
+        val table = holder.binding.mealTableLayout
+        for (ingredient in meal.ingredients) {
+            // TODO get food info from repository
+            val row = TableRow(table.context)
+            val cellGroup = TextView(table.context)
+            cellGroup.text = "bla"
+            row.addView(cellGroup, 0)
+            val cellIngredient = TextView(table.context)
+            cellIngredient.text = "blub"
+            row.addView(cellIngredient, 1)
+            val cellGram = TextView(table.context)
+            cellGram.text = "250"
+            row.addView(cellGram, 2)
+            table.addView(row)
+        }
     }
 
     override fun getItemCount(): Int {

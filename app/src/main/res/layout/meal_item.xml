@@ -15,11 +15,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         <TextView
-                android:text="@string/meal"
+                android:text="@string/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_meal"
+                android:id="@+id/tv_date"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
+        <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:stretchColumns="1"
+                app:layout_constraintTop_toBottomOf="@+id/tv_date" android:id="@+id/meal_table_layout">
+
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                <TextView
+                        android:text="@string/group"/>
+                <TextView
+                        android:text="@string/ingredient"/>
+                <TextView
+                        android:text="@string/gram"/>
+            </TableRow>
+
+        </TableLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

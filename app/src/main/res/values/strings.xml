@@ -28,4 +28,6 @@
     <string name="veggiesCooked">Cooked Vegetables</string>
     <string name="veggiesRaw">Raw Vegetables</string>
     <string name="showMeals">List</string>
+    <string name="next">Next</string>
+    <string name="feed">Feed!</string>
 </resources>

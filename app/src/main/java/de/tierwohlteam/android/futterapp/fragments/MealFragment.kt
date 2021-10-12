@@ -138,7 +138,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         currentFoodType = FoodType.OTHERS
         MaterialAlertDialogBuilder(context)
             .setTitle(resources.getString(R.string.select_group))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.next)) { dialog, which ->
                 currentFoodType = null
             }
             .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
@@ -167,7 +167,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
                 currentFoodName = ""
             }
-            .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.next)) { dialog, which ->
                 if (!foodNameInput.text.isNullOrBlank()) {
                     currentFoodName = foodNameInput.text.toString()
                 }

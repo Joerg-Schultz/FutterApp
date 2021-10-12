@@ -21,12 +21,14 @@
     <string name="add_component">Bestandteil hinzufügen</string>
     <string name="veggies">Gemüse</string>
     <string name="others">Anderes</string>
-    <string name="addMeal">New</string>
-    <string name="select_group">Select Group</string>
+    <string name="addMeal">Neu</string>
+    <string name="select_group">Gruppe auswählen</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
-    <string name="select_ingredient">Select Ingredient</string>
-    <string name="veggiesCooked">Cooked Vegetables</string>
-    <string name="veggiesRaw">Raw Vegetables</string>
-    <string name="showMeals">List</string>
+    <string name="select_ingredient">Bestandteil auswählen</string>
+    <string name="veggiesCooked">Gekochtes Gemüse</string>
+    <string name="veggiesRaw">Rohes Gemüse</string>
+    <string name="showMeals">Liste</string>
+    <string name="next">Weiter</string>
+    <string name="feed">Füttern!</string>
 </resources>

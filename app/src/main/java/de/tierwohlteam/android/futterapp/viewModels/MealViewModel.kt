@@ -13,7 +13,9 @@ import de.tierwohlteam.android.futterapp.others.Resource
 import de.tierwohlteam.android.futterapp.repositories.FutterAppRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +27,7 @@ class MealViewModel @Inject constructor(
 
     private val _insertMealFlow: MutableStateFlow<Event<Resource<Meal>>> = MutableStateFlow(Event(Resource.empty()))
     val insertMealFlow = _insertMealFlow as StateFlow<Event<Resource<Meal>>>
+    var allMeals: StateFlow<Resource<List<Meal>>> = MutableStateFlow(Resource.empty())
 
     suspend fun saveMeal(componentList: List<AddMealFragment.MealComponent>) {
         _insertMealFlow.value = Event(Resource.loading(null))
@@ -44,6 +47,15 @@ class MealViewModel @Inject constructor(
                 _insertMealFlow.value = Event(Resource.error("Could no insert meal", meal))
             }
 
+        }
+    }
+
+    fun getAllMeals() {
+        viewModelScope.launch {
+            allMeals = repository.allMeals.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = Resource.loading(emptyList()))
         }
     }
 }

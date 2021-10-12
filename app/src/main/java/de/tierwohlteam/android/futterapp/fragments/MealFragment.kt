@@ -21,9 +21,12 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
 import de.tierwohlteam.android.futterapp.adapters.MealComponentListAdapter
+import de.tierwohlteam.android.futterapp.adapters.MealListAdapter
 import de.tierwohlteam.android.futterapp.adapters.MealViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.AddMealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
+import de.tierwohlteam.android.futterapp.databinding.ShowMealsFragmentBinding
+import de.tierwohlteam.android.futterapp.databinding.ShowRatingsFragmentBinding
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
@@ -47,6 +50,7 @@ class MealFragment: Fragment(R.layout.meal_fragment) {
 
         val fragmentTitleList: Map<String,Fragment> = mapOf(
             getString(R.string.addMeal) to AddMealFragment(),
+            getString(R.string.showMeals) to ShowMealsFragment(),
         )
         viewPager2.adapter = MealViewPagerAdapter(this.childFragmentManager, lifecycle,
             ArrayList(fragmentTitleList.values)
@@ -216,3 +220,48 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         }
 }
 
+@ExperimentalCoroutinesApi
+class ShowMealsFragment: Fragment(R.layout.show_meals_fragment) {
+    private var _binding: ShowMealsFragmentBinding? = null
+    private val binding get() = _binding!!
+
+    private val mealViewModel: MealViewModel by activityViewModels()
+    private lateinit var mealListAdapter: MealListAdapter
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = ShowMealsFragmentBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.rvMeals.apply {
+            mealListAdapter = MealListAdapter()
+            adapter = mealListAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+
+        lifecycleScope.launchWhenStarted {
+            mealViewModel.getAllMeals()
+            mealViewModel.allMeals.collect { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        binding.pBMeallist.visibility = View.VISIBLE
+                    }
+                    Status.SUCCESS -> {
+                        binding.pBMeallist.visibility = View.GONE
+                        result.data?.let { list ->
+                            mealListAdapter.submitList(list.sortedByDescending { it.feeding.time }) }
+                    }
+                    else -> { /* NO-OP */ }
+                }
+            }
+        }
+    }
+}

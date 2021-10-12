@@ -28,4 +28,5 @@
     <string name="select_ingredient">Select Ingredient</string>
     <string name="veggiesCooked">Cooked Vegetables</string>
     <string name="veggiesRaw">Raw Vegetables</string>
+    <string name="showMeals">List</string>
 </resources>

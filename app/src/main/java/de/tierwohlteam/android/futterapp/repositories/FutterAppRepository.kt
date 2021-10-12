@@ -74,6 +74,15 @@ class FutterAppRepository @Inject constructor(
     suspend fun insertMeal(meal: Meal) = mealDao.insert(meal)
 
     /**
+     * get all Meals
+     */
+    val allMeals: Flow<Resource<List<Meal>>> = flow {
+        emit(Resource.loading(null))
+        val dataFlow = mealDao.getAll()
+        emitAll(dataFlow.map { Resource.success(it) })
+    }
+
+    /**
      * Fridge functions
      */
     private val fridgeDao = database.fridgeDao()

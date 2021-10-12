@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.MealItemBinding
-import de.tierwohlteam.android.futterapp.databinding.RatingItemBinding
 import de.tierwohlteam.android.futterapp.models.Meal
 
 class MealListAdapter: RecyclerView.Adapter<MealListAdapter.GoalViewHolder>() {
@@ -35,5 +34,9 @@ class MealListAdapter: RecyclerView.Adapter<MealListAdapter.GoalViewHolder>() {
     override fun onBindViewHolder(holder: MealListAdapter.GoalViewHolder, position: Int) {
         val meal = differ.currentList[position]
         holder.binding.tvMeal.text = meal.feeding.time.toString()
+    }
+
+    override fun getItemCount(): Int {
+        return differ.currentList.size
     }
 }

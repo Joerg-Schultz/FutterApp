@@ -32,15 +32,18 @@ class MealViewModel @Inject constructor(
 
     private val _insertMealFlow: MutableStateFlow<Event<Resource<Meal>>> = MutableStateFlow(Event(Resource.empty()))
     val insertMealFlow = _insertMealFlow as StateFlow<Event<Resource<Meal>>>
-    var allMeals: StateFlow<Resource<List<Meal>>> = MutableStateFlow(Resource.empty())
-    var allFoods: StateFlow<List<Food>> =
-            repository.allFoods().stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
 
+    var allMeals: StateFlow<Resource<List<Meal>>> = repository.allMeals.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = Resource.loading(emptyList())
+    )
 
+    var allFoods: StateFlow<List<Food>> = repository.allFoods().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
     suspend fun saveMeal() {
         _insertMealFlow.value = Event(Resource.loading(null))
@@ -65,21 +68,5 @@ class MealViewModel @Inject constructor(
     fun addIngredient(currentFoodType: FoodType, currentFoodName: String, currentGram: Int) {
         _ingredientList.value = _ingredientList.value +
                 MealComponent(currentFoodType, currentFoodName, null, currentGram)
-    }
-
-    fun getAllMeals() {
-        viewModelScope.launch {
-            allMeals = repository.allMeals.stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = Resource.loading(emptyList()))
-        }
-    }
-
-    fun ingredientToComponent(ingredient: Ingredient): MealComponent? {
-        Log.d("FOOD", "translating ${ingredient.foodID}")
-        allFoods.value.forEach { Log.d("FOOD", " ${it.name}") }
-        val food = allFoods.value.firstOrNull { it.id == ingredient.foodID }
-        return if ( food == null ) null else MealComponent(food.group, food.name, food.id, ingredient.gram)
     }
 }

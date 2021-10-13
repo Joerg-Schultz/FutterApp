@@ -244,7 +244,6 @@ class ShowMealsFragment: Fragment(R.layout.show_meals_fragment) {
 
 
         lifecycleScope.launchWhenStarted {
-            mealViewModel.getAllMeals()
             mealViewModel.allMeals.collect { result ->
                 when (result.status) {
                     Status.LOADING -> {

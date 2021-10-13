@@ -14,7 +14,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
-import com.benasher44.uuid.Uuid
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -26,12 +25,10 @@ import de.tierwohlteam.android.futterapp.adapters.MealViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.AddMealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.ShowMealsFragmentBinding
-import de.tierwohlteam.android.futterapp.databinding.ShowRatingsFragmentBinding
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -67,21 +64,12 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
     private var _binding: AddMealFragmentBinding? = null
     private val binding get() = _binding!!
 
-    inner class MealComponent(
-        val foodGroup: FoodType,
-        val foodName: String,
-        val foodID: Uuid?,
-        val gram: Int
-    ) {
-
-    }
     private var currentFoodType: FoodType? = null
     private var currentFoodName = ""
     private var currentGram = 0
 
     private val mealViewModel: MealViewModel by activityViewModels()
     private lateinit var mealComponentListAdapter: MealComponentListAdapter
-    private val ingredientList: MutableStateFlow<List<MealComponent>> = MutableStateFlow(emptyList())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -106,11 +94,11 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         }
         binding.btnSavemeal.setOnClickListener {
             lifecycleScope.launch {
-                mealViewModel.saveMeal(ingredientList.value)
+                mealViewModel.saveMeal()
             }
         }
         lifecycleScope.launchWhenStarted {
-            ingredientList.collect {
+            mealViewModel.ingredientList.collect {
                 mealComponentListAdapter.submitList(it)
             }
         }
@@ -199,8 +187,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             .setPositiveButton("OK") { dialog, which->
                 currentGram = currentSelection
                 if( currentFoodType != null) {
-                    val newComponent = MealComponent(currentFoodType!!, currentFoodName, null, currentGram)
-                    ingredientList.value = ingredientList.value + newComponent
+                    mealViewModel.addIngredient(currentFoodType!!, currentFoodName, currentGram)
                 }
             }
             .setNeutralButton("Cancel") { dialog, which ->

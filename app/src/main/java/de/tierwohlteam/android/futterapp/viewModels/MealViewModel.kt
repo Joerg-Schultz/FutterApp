@@ -2,12 +2,10 @@ package de.tierwohlteam.android.futterapp.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.benasher44.uuid.Uuid
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.tierwohlteam.android.futterapp.fragments.AddMealFragment
-import de.tierwohlteam.android.futterapp.models.Feeding
-import de.tierwohlteam.android.futterapp.models.Ingredient
+import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.models.Meal
-import de.tierwohlteam.android.futterapp.models.Rating
 import de.tierwohlteam.android.futterapp.others.Event
 import de.tierwohlteam.android.futterapp.others.Resource
 import de.tierwohlteam.android.futterapp.repositories.FutterAppRepository
@@ -25,15 +23,25 @@ class MealViewModel @Inject constructor(
     private val repository: FutterAppRepository,
 ) : ViewModel() {
 
+    // Combines Ingredients with name + group of food
+    inner class MealComponent(
+        val foodGroup: FoodType,
+        val foodName: String,
+        val foodID: Uuid?,
+        val gram: Int
+    ) { }
+    private val _ingredientList: MutableStateFlow<List<MealComponent>> = MutableStateFlow(emptyList())
+    val ingredientList: StateFlow<List<MealComponent>> = _ingredientList
+
     private val _insertMealFlow: MutableStateFlow<Event<Resource<Meal>>> = MutableStateFlow(Event(Resource.empty()))
     val insertMealFlow = _insertMealFlow as StateFlow<Event<Resource<Meal>>>
     var allMeals: StateFlow<Resource<List<Meal>>> = MutableStateFlow(Resource.empty())
 
-    suspend fun saveMeal(componentList: List<AddMealFragment.MealComponent>) {
+    suspend fun saveMeal() {
         _insertMealFlow.value = Event(Resource.loading(null))
         val meal = Meal()
         val ingredientJob = viewModelScope.launch {
-            for (component in componentList) {
+            for (component in _ingredientList.value) {
                 val food = repository.getFoodByNameAndType(type = component.foodGroup, name = component.foodName)
                 meal.addIngredient(food, component.gram)
             }
@@ -48,6 +56,10 @@ class MealViewModel @Inject constructor(
             }
 
         }
+    }
+    fun addIngredient(currentFoodType: FoodType, currentFoodName: String, currentGram: Int) {
+        _ingredientList.value = _ingredientList.value +
+                MealComponent(currentFoodType, currentFoodName, null, currentGram)
     }
 
     fun getAllMeals() {

@@ -6,23 +6,23 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.MealComponentItemBinding
-import de.tierwohlteam.android.futterapp.fragments.AddMealFragment
+import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 class MealComponentListAdapter: RecyclerView.Adapter<MealComponentListAdapter.GoalViewHolder>() {
 
     // generate a diff list to update only changed items in the RecView
-    private val diffCallback = object : DiffUtil.ItemCallback<AddMealFragment.MealComponent>(){
-        override fun areItemsTheSame(oldItem: AddMealFragment.MealComponent, newItem: AddMealFragment.MealComponent): Boolean {
+    private val diffCallback = object : DiffUtil.ItemCallback<MealViewModel.MealComponent>(){
+        override fun areItemsTheSame(oldItem: MealViewModel.MealComponent, newItem: MealViewModel.MealComponent): Boolean {
             return oldItem.foodGroup == newItem.foodGroup && oldItem.foodName == newItem.foodName
         }
-        override fun areContentsTheSame(oldItem: AddMealFragment.MealComponent, newItem: AddMealFragment.MealComponent): Boolean {
+        override fun areContentsTheSame(oldItem: MealViewModel.MealComponent, newItem: MealViewModel.MealComponent): Boolean {
             return oldItem.hashCode() == newItem.hashCode()
         }
     }
     private val differ = AsyncListDiffer(this, diffCallback)
-    fun submitList(list: List<AddMealFragment.MealComponent>) = differ.submitList(list)
+    fun submitList(list: List<MealViewModel.MealComponent>) = differ.submitList(list)
 
 
     inner class GoalViewHolder(val binding: MealComponentItemBinding) : RecyclerView.ViewHolder(binding.root)

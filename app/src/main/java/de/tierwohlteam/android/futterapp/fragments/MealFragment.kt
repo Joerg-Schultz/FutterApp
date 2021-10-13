@@ -19,11 +19,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
+import de.tierwohlteam.android.futterapp.adapters.FoodListAdapter
 import de.tierwohlteam.android.futterapp.adapters.MealComponentListAdapter
 import de.tierwohlteam.android.futterapp.adapters.MealListAdapter
 import de.tierwohlteam.android.futterapp.adapters.MealViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.AddMealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
+import de.tierwohlteam.android.futterapp.databinding.ShowFoodFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.ShowMealsFragmentBinding
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.others.Status
@@ -48,6 +50,7 @@ class MealFragment: Fragment(R.layout.meal_fragment) {
         val fragmentTitleList: Map<String,Fragment> = mapOf(
             getString(R.string.addMeal) to AddMealFragment(),
             getString(R.string.showMeals) to ShowMealsFragment(),
+            getString(R.string.food) to ShowFoodFragment(),
         )
         viewPager2.adapter = MealViewPagerAdapter(this.childFragmentManager, lifecycle,
             ArrayList(fragmentTitleList.values)
@@ -227,12 +230,18 @@ class ShowMealsFragment: Fragment(R.layout.show_meals_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.rvMeals.apply {
-            mealListAdapter = MealListAdapter()
-            adapter = mealListAdapter
-            layoutManager = LinearLayoutManager(requireContext())
+        lifecycleScope.launchWhenStarted {
+            mealViewModel.allFoods.collect {
+                if (!it.isNullOrEmpty()) {
+                    binding.rvMeals.apply {
+                        mealListAdapter = MealListAdapter(mealViewModel.allFoods.value)
+                        adapter = mealListAdapter
+                        layoutManager = LinearLayoutManager(requireContext())
+                    }
+                }
+            }
         }
+
 
         lifecycleScope.launchWhenStarted {
             mealViewModel.getAllMeals()
@@ -248,6 +257,40 @@ class ShowMealsFragment: Fragment(R.layout.show_meals_fragment) {
                     }
                     else -> { /* NO-OP */ }
                 }
+            }
+        }
+    }
+}
+
+@ExperimentalCoroutinesApi
+class ShowFoodFragment: Fragment(R.layout.show_food_fragment) {
+    private var _binding: ShowFoodFragmentBinding? = null
+    private val binding get() = _binding!!
+
+    private val mealViewModel: MealViewModel by activityViewModels()
+    private lateinit var foodListAdapter: FoodListAdapter
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = ShowFoodFragmentBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.rvFoodlist.apply {
+            foodListAdapter = FoodListAdapter()
+            adapter = foodListAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+        lifecycleScope.launchWhenStarted {
+            //mealViewModel.getAllFoods()
+            mealViewModel.allFoods.collect {
+            if (! it.isNullOrEmpty())
+                foodListAdapter.submitList(it)
             }
         }
     }

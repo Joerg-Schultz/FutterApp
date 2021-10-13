@@ -69,4 +69,10 @@ class MealViewModel @Inject constructor(
         _ingredientList.value = _ingredientList.value +
                 MealComponent(currentFoodType, currentFoodName, null, currentGram)
     }
+
+    fun deleteIngredient(pos: Int) {
+        val newList = _ingredientList.value.toMutableList()
+        newList.removeAt(pos)
+        _ingredientList.value = newList
+    }
 }

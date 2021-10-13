@@ -12,7 +12,9 @@ import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -36,6 +38,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
 @ExperimentalCoroutinesApi
 class MealFragment: Fragment(R.layout.meal_fragment) {
@@ -95,6 +99,9 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             adapter = mealComponentListAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(binding.rvMeal)
+
         binding.btnAddingredient.setOnClickListener {
             selectGroup(it.context)
             // set ingredient
@@ -132,6 +139,35 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             }
         }
     }
+
+    private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(
+        0,
+        ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
+    ) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            return false
+        }
+
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            val pos = viewHolder.adapterPosition
+            when(direction){
+                ItemTouchHelper.RIGHT -> mealViewModel.deleteIngredient(pos)
+                //ItemTouchHelper.LEFT -> mealViewModel.deleteIngredient(pos)
+            }
+        }
+
+        override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+            return super.getSwipeDirs(recyclerView, viewHolder)
+        }
+
+    }
+
+
     private fun selectGroup(context: Context) {
         val foodGroups = FoodType.values().map { translateFoodType(it) }.toTypedArray()
         val foodMap = FoodType.values().associateWith { translateFoodType(it) }

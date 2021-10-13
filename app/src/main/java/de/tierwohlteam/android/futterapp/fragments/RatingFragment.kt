@@ -143,7 +143,6 @@ class ShowRatingsFragment: Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
         lifecycleScope.launchWhenStarted {
-            ratingViewModel.getAllRatings()
             ratingViewModel.allRatings.collect { result ->
                 when (result.status) {
                     Status.LOADING -> {

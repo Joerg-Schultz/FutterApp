@@ -21,18 +21,14 @@ class RatingViewModel @Inject constructor(
     private val repository: FutterAppRepository,
 ) : ViewModel() {
 
-    var allRatings: StateFlow<Resource<List<Rating>>> = MutableStateFlow(Resource.empty())
     private val _insertRatingFlow: MutableStateFlow<Event<Resource<Rating>>> = MutableStateFlow(Event(Resource.empty()))
     val insertRatingFlow = _insertRatingFlow as StateFlow<Event<Resource<Rating>>>
 
-    fun getAllRatings() {
-        viewModelScope.launch {
-            allRatings = repository.allRatings.stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = Resource.loading(emptyList()))
-        }
-    }
+    var allRatings: StateFlow<Resource<List<Rating>>> = repository.allRatings.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = Resource.loading(emptyList())
+    )
 
     suspend fun insertRating(value: Float, comment: String) {
         if(value < 0) {

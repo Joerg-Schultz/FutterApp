@@ -27,11 +27,14 @@ import de.tierwohlteam.android.futterapp.databinding.AddMealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.ShowFoodFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.ShowMealsFragmentBinding
+import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
@@ -64,6 +67,8 @@ class MealFragment: Fragment(R.layout.meal_fragment) {
 }
 @ExperimentalCoroutinesApi
 class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
+    private lateinit var foodList: List<Food>
+
     private var _binding: AddMealFragmentBinding? = null
     private val binding get() = _binding!!
 
@@ -103,6 +108,11 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         lifecycleScope.launchWhenStarted {
             mealViewModel.ingredientList.collect {
                 mealComponentListAdapter.submitList(it)
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            mealViewModel.allFoods.collect { result ->
+                if (result.status == Status.SUCCESS) foodList = result.data!!
             }
         }
         lifecycleScope.launchWhenStarted {
@@ -151,7 +161,9 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             )
             setPadding(20, 20, 20, 20)
         }
-        val foodNames = listOf("eins", "zwei", "drei")
+
+        val foodNames = foodList.filter { it.group == currentFoodType }
+            .map { it.name }
             .toTypedArray()
         MaterialAlertDialogBuilder(context)
             .setTitle(resources.getString(R.string.select_ingredient))

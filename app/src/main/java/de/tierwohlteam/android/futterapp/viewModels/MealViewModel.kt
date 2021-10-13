@@ -39,10 +39,10 @@ class MealViewModel @Inject constructor(
         initialValue = Resource.loading(emptyList())
     )
 
-    var allFoods: StateFlow<List<Food>> = repository.allFoods().stateIn(
+    var allFoods: StateFlow<Resource<List<Food>>> = repository.allFoods.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
+        initialValue = Resource.loading(emptyList())
     )
 
     suspend fun saveMeal() {

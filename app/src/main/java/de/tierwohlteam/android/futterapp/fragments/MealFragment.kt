@@ -129,10 +129,10 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         currentFoodType = FoodType.OTHERS
         MaterialAlertDialogBuilder(context)
             .setTitle(resources.getString(R.string.select_group))
-            .setNeutralButton(resources.getString(R.string.next)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
                 currentFoodType = null
             }
-            .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.next)) { dialog, which ->
                 selectIngredient(context)
             }
             .setSingleChoiceItems(foodMap.values.toTypedArray(), checkedItem) { dialog, which ->
@@ -231,13 +231,16 @@ class ShowMealsFragment: Fragment(R.layout.show_meals_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launchWhenStarted {
-            mealViewModel.allFoods.collect {
-                if (!it.isNullOrEmpty()) {
-                    binding.rvMeals.apply {
-                        mealListAdapter = MealListAdapter(mealViewModel.allFoods.value)
-                        adapter = mealListAdapter
-                        layoutManager = LinearLayoutManager(requireContext())
+            mealViewModel.allFoods.collect { result ->
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        binding.rvMeals.apply {
+                            mealListAdapter = MealListAdapter(result.data!!)
+                            adapter = mealListAdapter
+                            layoutManager = LinearLayoutManager(requireContext())
+                        }
                     }
+                    else -> { /* NO-OP */ }
                 }
             }
         }
@@ -286,10 +289,11 @@ class ShowFoodFragment: Fragment(R.layout.show_food_fragment) {
             layoutManager = LinearLayoutManager(requireContext())
         }
         lifecycleScope.launchWhenStarted {
-            //mealViewModel.getAllFoods()
-            mealViewModel.allFoods.collect {
-            if (! it.isNullOrEmpty())
-                foodListAdapter.submitList(it)
+            mealViewModel.allFoods.collect { result ->
+                when (result.status) {
+                    Status.SUCCESS -> foodListAdapter.submitList(result.data!!)
+                    else -> { /* NO-OP */ }
+                }
             }
         }
     }

@@ -44,11 +44,12 @@ class FutterAppRepository @Inject constructor(
 
     /**
      * get all foods
-     * @return Flow of list of food
+     * @return Flow of Resource of list of food
      */
-    fun allFoods(): Flow<List<Food>> {
-        Log.d("FOOD", "getting all food")
-        return foodDao.getAll()
+    val allFoods: Flow<Resource<List<Food>>> = flow {
+        emit(Resource.loading(null))
+        val dataFlow = foodDao.getAll()
+        emitAll(dataFlow.map { Resource.success(it) })
     }
 
     /**

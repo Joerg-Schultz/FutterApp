@@ -1,5 +1,6 @@
 package de.tierwohlteam.android.futterapp.repositories
 
+import android.util.Log
 import com.benasher44.uuid.Uuid
 import de.tierwohlteam.android.futterapp.models.*
 import de.tierwohlteam.android.futterapp.others.Resource
@@ -40,6 +41,22 @@ class FutterAppRepository @Inject constructor(
      * Food functions
      */
     private val foodDao = database.foodDao()
+
+    /**
+     * get all foods
+     * @return Flow of list of food
+     */
+    fun allFoods(): Flow<List<Food>> {
+        Log.d("FOOD", "getting all food")
+        return foodDao.getAll()
+    }
+
+    /**
+     * get a food by its ID
+     * @param[id] Uuid
+     * @return Food
+     */
+    suspend fun getFoodByID(id: Uuid): Food = foodDao.getByID(id)
     /**
      * Insert a Food
      * make sure, that the id is correct!

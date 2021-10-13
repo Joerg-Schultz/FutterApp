@@ -4,8 +4,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import com.benasher44.uuid.Uuid
 import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.FoodType
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FoodDao {
@@ -27,4 +29,10 @@ interface FoodDao {
         }
         return dbFood
     }
+
+    @Query("SELECT * from food")
+    fun getAll(): Flow<List<Food>>
+
+    @Query("SELECT * from food where id = :id")
+    suspend fun getByID(id: Uuid): Food
 }

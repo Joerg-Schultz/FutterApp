@@ -17,15 +17,15 @@
             android:layout_height="match_parent">
 
         <TextView
-                android:text="Food Name"
+                android:text="@string/food"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/tv_foodname"
                 app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         <TextView
-                android:text="Food ID"
+                android:text="@string/group"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/tv_foodID"
+                android:layout_height="wrap_content" android:id="@+id/tv_foodGroup"
                 app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

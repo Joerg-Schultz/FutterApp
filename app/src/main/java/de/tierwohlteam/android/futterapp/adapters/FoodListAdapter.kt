@@ -36,7 +36,7 @@ class FoodListAdapter: RecyclerView.Adapter<FoodListAdapter.FoodViewHolder>() {
     override fun onBindViewHolder(holder: FoodListAdapter.FoodViewHolder, position: Int) {
         val food = differ.currentList[position]
         holder.binding.tvFoodname.text = food.name
-        holder.binding.tvFoodID.text = food.id.toString()
+        holder.binding.tvFoodGroup.text = food.group.toString()
     }
 
     override fun getItemCount(): Int {

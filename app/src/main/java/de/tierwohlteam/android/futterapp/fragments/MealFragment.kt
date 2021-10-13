@@ -303,7 +303,7 @@ class ShowFoodFragment: Fragment(R.layout.show_food_fragment) {
         lifecycleScope.launchWhenStarted {
             mealViewModel.allFoods.collect { result ->
                 when (result.status) {
-                    Status.SUCCESS -> foodListAdapter.submitList(result.data!!)
+                    Status.SUCCESS -> foodListAdapter.submitList(result.data!!.sortedBy { it.name })
                     else -> { /* NO-OP */ }
                 }
             }

@@ -32,4 +32,7 @@
     <string name="next">Weiter</string>
     <string name="feed">Füttern!</string>
     <string name="food">Food</string>
+    <string name="content">Content</string>
+    <string name="addPacks">Fill</string>
+    <string name="amount">Amount</string>
 </resources>

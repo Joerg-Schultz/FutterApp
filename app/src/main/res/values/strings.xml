@@ -31,4 +31,7 @@
     <string name="next">Next</string>
     <string name="feed">Feed!</string>
     <string name="food">Food</string>
+    <string name="content">Content</string>
+    <string name="addPacks">Fill</string>
+    <string name="amount">Amount</string>
 </resources>

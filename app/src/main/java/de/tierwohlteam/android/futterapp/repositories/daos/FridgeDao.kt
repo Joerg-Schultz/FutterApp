@@ -11,14 +11,16 @@ import de.tierwohlteam.android.futterapp.models.Fridge
 import de.tierwohlteam.android.futterapp.models.Pack
 import de.tierwohlteam.android.futterapp.models.PacksInFridge
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 @Dao
 interface FridgeDao {
 
     @Transaction
     @Query("SELECT * from drawer")
-    suspend fun allDrawers(): List<Fridge.FoodInDrawer>
+    fun allDrawers(): Flow<List<Fridge.FoodInDrawer>>
 
     @Query("SELECT * from drawer where foodID = :foodID and packSize = :packSize")
     suspend fun drawer(foodID: Uuid, packSize: Int): Fridge.Drawer?
@@ -26,15 +28,13 @@ interface FridgeDao {
     @Insert(onConflict = REPLACE)
     suspend fun insertDrawer(drawer: Fridge.Drawer)
 
-    suspend fun content(): Flow<List<PacksInFridge>> = flow {
-        emit(allDrawers().map {
-            PacksInFridge(Pack(it.food, it.drawer.packSize), it.drawer.amount)
-        })
+    fun content(): Flow<List<PacksInFridge>> = allDrawers().map { list ->
+            list.map { PacksInFridge(Pack(it.food, it.drawer.packSize), it.drawer.amount) }
     }
 
-    suspend fun addPack(pack: Pack): PacksInFridge {
+    suspend fun addPacks(pack: Pack, amount: Int = 1): PacksInFridge {
         val currentDrawer = drawer(pack.food.id, pack.size)
-        val newAmount = (currentDrawer?.amount ?: 0) + 1
+        val newAmount = (currentDrawer?.amount ?: 0) + amount
         insertDrawer(Fridge.Drawer(foodID = pack.food.id,
             packSize = pack.size,
             amount = newAmount,

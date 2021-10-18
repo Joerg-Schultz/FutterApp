@@ -128,8 +128,8 @@ class FutterAppRepository @Inject constructor(
      * @param[pack] Pack
      * @return PacksInFridge with updated count for this pack
      */
-    suspend fun addPackToFridge(pack: Pack): PacksInFridge =
-        fridgeDao.addPack(pack)
+    suspend fun addPacksToFridge(pack: Pack, amount: Int = 0): PacksInFridge =
+        fridgeDao.addPacks(pack, amount)
 
     /**
      * get a pack from the fridge
@@ -139,4 +139,5 @@ class FutterAppRepository @Inject constructor(
      */
     suspend fun getPackFromFridge(pack: Pack): PacksInFridge? =
         fridgeDao.getPack(pack)
+
 }

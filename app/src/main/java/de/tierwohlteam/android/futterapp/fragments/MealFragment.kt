@@ -122,6 +122,20 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
                 if (result.status == Status.SUCCESS) foodList = result.data!!
             }
         }
+
+        lifecycleScope.launchWhenStarted {
+            mealViewModel.latestMeal.collect{ result ->
+                if (result.status == Status.SUCCESS) {
+                    mealViewModel.emptyIngredientList()
+                    for (ingredient in result.data!!.ingredients) {
+                        val food = foodList.first {it.id == ingredient.foodID}
+                        mealViewModel.addIngredient(food.group, food.name, ingredient.gram)
+                    }
+                }
+
+            }
+        }
+
         lifecycleScope.launchWhenStarted {
             mealViewModel.insertMealFlow.collect { result ->
                 val resource = result.getContentIfNotHandled()

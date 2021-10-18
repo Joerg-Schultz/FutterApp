@@ -39,6 +39,12 @@ class MealViewModel @Inject constructor(
         initialValue = Resource.loading(emptyList())
     )
 
+    var latestMeal: StateFlow<Resource<Meal>> = repository.latestMeal.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = Resource.loading(null)
+    )
+
     var allFoods: StateFlow<Resource<List<Food>>> = repository.allFoods.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -74,5 +80,9 @@ class MealViewModel @Inject constructor(
         val newList = _ingredientList.value.toMutableList()
         newList.removeAt(pos)
         _ingredientList.value = newList
+    }
+
+    fun emptyIngredientList() {
+        _ingredientList.value = emptyList()
     }
 }

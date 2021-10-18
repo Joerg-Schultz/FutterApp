@@ -24,6 +24,9 @@ class FridgeViewModel @Inject constructor(
     private val _insertPacksFlow: MutableStateFlow<Event<Resource<PacksInFridge>>> = MutableStateFlow(Event(Resource.empty()))
     val insertPacksFlow = _insertPacksFlow as StateFlow<Event<Resource<PacksInFridge>>>
 
+    private val _deletePackFlow: MutableStateFlow<Event<Resource<PacksInFridge>>> = MutableStateFlow(Event(Resource.empty()))
+    val deletePacksFlow = _deletePackFlow as StateFlow<Event<Resource<PacksInFridge>>>
+
     val content: StateFlow<Resource<List<PacksInFridge>>> = repository.fridgeContent.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -46,6 +49,20 @@ class FridgeViewModel @Inject constructor(
                 _insertPacksFlow.value = Event(Resource.error("Could not insert packs", null))
             }
 
+        }
+    }
+
+    fun deleteOnePack(pos: Int) {
+        val pack = content.value.data?.get(pos)?.pack
+        if (pack != null) {
+            viewModelScope.launch {
+                try {
+                    val packInFridge = repository.getPackFromFridge(pack)
+                    _deletePackFlow.value = Event(Resource.success(packInFridge))
+                } catch (e: Throwable) {
+                    _insertPacksFlow.value = Event(Resource.error("Could not retrieve pack", null))
+                }
+            }
         }
     }
 

@@ -10,6 +10,8 @@ import com.benasher44.uuid.uuid4
 import de.tierwohlteam.android.futterapp.models.Fridge
 import de.tierwohlteam.android.futterapp.models.Pack
 import de.tierwohlteam.android.futterapp.models.PacksInFridge
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 @Dao
 interface FridgeDao {
@@ -24,11 +26,11 @@ interface FridgeDao {
     @Insert(onConflict = REPLACE)
     suspend fun insertDrawer(drawer: Fridge.Drawer)
 
-    //TODO Return Flow here?
-    suspend fun content(): List<PacksInFridge> =
-        allDrawers().map {
+    suspend fun content(): Flow<List<PacksInFridge>> = flow {
+        emit(allDrawers().map {
             PacksInFridge(Pack(it.food, it.drawer.packSize), it.drawer.amount)
-        }
+        })
+    }
 
     suspend fun addPack(pack: Pack): PacksInFridge {
         val currentDrawer = drawer(pack.food.id, pack.size)

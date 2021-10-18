@@ -117,7 +117,11 @@ class FutterAppRepository @Inject constructor(
     /**
      * get the current content
      */
-    suspend fun fridgeContent() = fridgeDao.content()
+    val fridgeContent: Flow<Resource<List<PacksInFridge>>> = flow {
+        emit(Resource.loading(null))
+        val dataFlow = fridgeDao.content()
+        emitAll(dataFlow.map { Resource.success(it) })
+    }
 
     /**
      * add a pack to the fridge

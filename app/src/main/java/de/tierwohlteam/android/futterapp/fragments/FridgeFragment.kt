@@ -13,9 +13,11 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
 import de.tierwohlteam.android.futterapp.adapters.FridgeListAdapter
-import de.tierwohlteam.android.futterapp.adapters.MealComponentListAdapter
+import de.tierwohlteam.android.futterapp.adapters.FridgeViewPagerAdapter
 import de.tierwohlteam.android.futterapp.adapters.MealViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.FridgeFragmentBinding
+import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
+import de.tierwohlteam.android.futterapp.databinding.ShowFridgeFragmentBinding
 import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.viewModels.FridgeViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,22 +28,47 @@ class FridgeFragment: Fragment(R.layout.fridge_fragment) {
     private var _binding: FridgeFragmentBinding? = null
     private val binding get() =_binding!!
 
-    private val fridgeViewModel: FridgeViewModel by activityViewModels()
-
-    private lateinit var fridgeListAdapter: FridgeListAdapter
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FridgeFragmentBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        val viewPager2 = view.findViewById<ViewPager2>(R.id.fridge_pager_container)
 
-        binding.fabFillFridge.setOnClickListener {
-            // TODO
-        }
+        val fragmentTitleList: Map<String,Fragment> = mapOf(
+            getString(R.string.fridge) to ShowFridgeFragment(),
+            //getString(R.string.addPacks) to FillFridgeFragment(),
+        )
+        viewPager2.adapter = FridgeViewPagerAdapter(this.childFragmentManager, lifecycle,
+            ArrayList(fragmentTitleList.values)
+        )
+
+        val tabLayout = view.findViewById<TabLayout>(R.id.fridge_tablayout)
+        TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+            tab.text = fragmentTitleList.keys.toTypedArray()[position]
+        }.attach()
+    }
+}
+
+@ExperimentalCoroutinesApi
+class ShowFridgeFragment: Fragment(R.layout.show_fridge_fragment) {
+    private var _binding: ShowFridgeFragmentBinding? = null
+    private val binding get() =_binding!!
+
+    private val fridgeViewModel: FridgeViewModel by activityViewModels()
+
+    private lateinit var fridgeListAdapter: FridgeListAdapter
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = ShowFridgeFragmentBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.rvFridge.apply {
             fridgeListAdapter = FridgeListAdapter()
@@ -54,7 +81,7 @@ class FridgeFragment: Fragment(R.layout.fridge_fragment) {
                     Status.LOADING -> binding.pBFridge.visibility = View.VISIBLE
                     Status.SUCCESS -> {
                         binding.pBFridge.visibility = View.GONE
-                        fridgeListAdapter.submitList(it.data!!)
+                        fridgeListAdapter.submitList(it.data!!.filter { packs -> packs.amount > 0 })
                     }
                     else -> { /* NO-OP */ }
                 }

@@ -23,7 +23,7 @@
             android:id="@+id/fridgeFragment"
             android:name="de.tierwohlteam.android.futterapp.fragments.FridgeFragment"
             android:label="@string/fridge"
-            tools:layout="@layout/fridge_fragment">
+            tools:layout="@layout/show_fridge_fragment">
     </fragment>
 
 

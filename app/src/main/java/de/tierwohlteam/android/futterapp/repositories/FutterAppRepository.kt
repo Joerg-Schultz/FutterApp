@@ -116,10 +116,21 @@ class FutterAppRepository @Inject constructor(
 
     /**
      * get the current content
+     * without empty packs
      */
     val fridgeContent: Flow<Resource<List<PacksInFridge>>> = flow {
         emit(Resource.loading(null))
         val dataFlow = fridgeDao.content()
+        emitAll(dataFlow.map { Resource.success(it) })
+    }
+
+    /**
+     * get a list of all packs which were in the fridge
+     * content + empty
+     */
+    val fridgeContentWithEmpty: Flow<Resource<List<PacksInFridge>>> = flow {
+        emit(Resource.loading(null))
+        val dataFlow = fridgeDao.contentWithEmpty()
         emitAll(dataFlow.map { Resource.success(it) })
     }
 

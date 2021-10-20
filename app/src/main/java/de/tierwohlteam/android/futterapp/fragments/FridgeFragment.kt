@@ -98,7 +98,7 @@ class ShowFridgeFragment: Fragment(R.layout.show_fridge_fragment) {
                     Status.LOADING -> binding.pBShowfridge.visibility = View.VISIBLE
                     Status.SUCCESS -> {
                         binding.pBShowfridge.visibility = View.GONE
-                        fridgeListAdapter.submitList(it.data!!.filter { packs -> packs.amount > 0 })
+                        fridgeListAdapter.submitList(it.data!!)
                     }
                     else -> { /* NO-OP */ }
                 }
@@ -107,7 +107,7 @@ class ShowFridgeFragment: Fragment(R.layout.show_fridge_fragment) {
     }
     private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(
         0,
-        ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
+        ItemTouchHelper.RIGHT // or ItemTouchHelper.LEFT,
     ) {
         override fun onMove(
             recyclerView: RecyclerView,
@@ -167,7 +167,7 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
             layoutManager = LinearLayoutManager(requireContext())
         }
         lifecycleScope.launchWhenStarted {
-            fridgeViewModel.content.collect {
+            fridgeViewModel.contentWithEmpty.collect {
                 when (it.status) {
                     Status.LOADING -> binding.pBFillfridge.visibility = View.VISIBLE
                     Status.SUCCESS -> {

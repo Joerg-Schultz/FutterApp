@@ -32,7 +32,11 @@ class FridgeViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = Resource.loading(emptyList())
     )
-
+    val contentWithEmpty: StateFlow<Resource<List<PacksInFridge>>> = repository.fridgeContentWithEmpty.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = Resource.loading(emptyList())
+    )
     suspend fun addToFridge(foodType: FoodType, foodName: String, gram: Int, amount: Int) {
         _insertPacksFlow.value = Event(Resource.loading(null))
         var pack: Pack? = null

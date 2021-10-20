@@ -19,8 +19,12 @@ import kotlinx.coroutines.flow.map
 interface FridgeDao {
 
     @Transaction
-    @Query("SELECT * from drawer")
+    @Query("SELECT * from drawer where amount > 0")
     fun allDrawers(): Flow<List<Fridge.FoodInDrawer>>
+
+    @Transaction
+    @Query("SELECT * from drawer")
+    fun allDrawersWithZero(): Flow<List<Fridge.FoodInDrawer>>
 
     @Query("SELECT * from drawer where foodID = :foodID and packSize = :packSize")
     suspend fun drawer(foodID: Uuid, packSize: Int): Fridge.Drawer?
@@ -32,6 +36,9 @@ interface FridgeDao {
             list.map { PacksInFridge(Pack(it.food, it.drawer.packSize), it.drawer.amount) }
     }
 
+    fun contentWithEmpty(): Flow<List<PacksInFridge>> = allDrawersWithZero().map { list ->
+        list.map { PacksInFridge(Pack(it.food, it.drawer.packSize), it.drawer.amount) }
+    }
     suspend fun addPacks(pack: Pack, amount: Int = 1): PacksInFridge {
         val currentDrawer = drawer(pack.food.id, pack.size)
         val newAmount = (currentDrawer?.amount ?: 0) + amount

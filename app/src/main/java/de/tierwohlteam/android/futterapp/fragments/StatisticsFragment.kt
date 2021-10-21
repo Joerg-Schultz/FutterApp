@@ -6,15 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
+import de.tierwohlteam.android.futterapp.adapters.CalendarListAdapter
+import de.tierwohlteam.android.futterapp.adapters.RatingsListAdapter
 import de.tierwohlteam.android.futterapp.adapters.RatingsViewPagerAdapter
 import de.tierwohlteam.android.futterapp.adapters.StatisticsViewPagerAdapter
+import de.tierwohlteam.android.futterapp.databinding.AddRatingFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.RatingFragmentBinding
+import de.tierwohlteam.android.futterapp.databinding.ShowCalendarFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.StatisticsFragmentBinding
 import de.tierwohlteam.android.futterapp.viewModels.RatingViewModel
+import de.tierwohlteam.android.futterapp.viewModels.StatisticsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 
@@ -35,7 +42,7 @@ class StatisticsFragment: Fragment(R.layout.statistics_fragment) {
         val viewPager2 = view.findViewById<ViewPager2>(R.id.statistics_pager_container)
 
         val fragmentTitleList: Map<String, Fragment> = mapOf(
-            //getString(R.string.addRating) to AddRatingFragment(),
+            getString(R.string.calendar) to ShowCalendarFragment(),
         )
         viewPager2.adapter = StatisticsViewPagerAdapter(this.childFragmentManager, lifecycle,
             ArrayList(fragmentTitleList.values)
@@ -45,5 +52,35 @@ class StatisticsFragment: Fragment(R.layout.statistics_fragment) {
         TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
             tab.text = fragmentTitleList.keys.toTypedArray()[position]
         }.attach()
+    }
+}
+
+
+@ExperimentalCoroutinesApi
+class ShowCalendarFragment: Fragment() {
+    private var _binding: ShowCalendarFragmentBinding? = null
+    private val binding get() = _binding!!
+
+    private val statisticsViewModel: StatisticsViewModel by activityViewModels()
+    private lateinit var calendarListAdapter: CalendarListAdapter
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = ShowCalendarFragmentBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.rvCalendar.apply {
+            calendarListAdapter = CalendarListAdapter()
+            adapter = calendarListAdapter
+            layoutManager = GridLayoutManager(requireContext(), 2)
+        }
+        calendarListAdapter.submitList(statisticsViewModel.testList)
     }
 }

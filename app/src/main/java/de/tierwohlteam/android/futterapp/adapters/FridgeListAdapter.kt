@@ -1,5 +1,6 @@
 package de.tierwohlteam.android.futterapp.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -8,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.FoodItemBinding
 import de.tierwohlteam.android.futterapp.databinding.FridgeItemBinding
 import de.tierwohlteam.android.futterapp.models.Food
+import de.tierwohlteam.android.futterapp.models.Pack
 import de.tierwohlteam.android.futterapp.models.PacksInFridge
 
-class FridgeListAdapter: RecyclerView.Adapter<FridgeListAdapter.FridgeViewHolder>() {
+class FridgeListAdapter(val amountSelector: ((pack: Pack, context: Context) -> Unit)? = null): RecyclerView.Adapter<FridgeListAdapter.FridgeViewHolder>() {
 
     // generate a diff list to update only changed items in the RecView
     private val diffCallback = object : DiffUtil.ItemCallback<PacksInFridge>(){
@@ -42,6 +44,11 @@ class FridgeListAdapter: RecyclerView.Adapter<FridgeListAdapter.FridgeViewHolder
             tvFridgeFoodname.text = packs.pack.food.name
             tvFridgeGram.text = packs.pack.size.toString()
             tvFridgeAmount.text = packs.amount.toString()
+        }
+        if(amountSelector != null) {
+            holder.itemView.setOnClickListener { view ->
+                amountSelector.invoke(packs.pack, view.context)
+            }
         }
     }
 

@@ -30,6 +30,7 @@ import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.ShowFridgeFragmentBinding
 import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.FoodType
+import de.tierwohlteam.android.futterapp.models.Pack
 import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.viewModels.FridgeViewModel
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
@@ -162,7 +163,7 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
             }
         }
         binding.rvFillfridge.apply {
-            fridgeListAdapter = FridgeListAdapter()
+            fridgeListAdapter = FridgeListAdapter { pack: Pack, context: Context -> amountSelector(pack, context) }
             adapter = fridgeListAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
@@ -278,9 +279,16 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
             .setView(numberPicker)
             .show()
     }
+
+    fun amountSelector(pack: Pack, context: Context) {
+        currentFoodName = pack.food.name
+        currentFoodType = pack.food.group
+        currentGram = pack.size
+        selectAmount(context)
+    }
     private fun selectAmount(context: Context) {
         val numberPicker = NumberPicker(context)
-        var currentSelection = 0
+        var currentSelection = 1
         numberPicker.apply {
             wrapSelectorWheel = true
             minValue = 1
@@ -294,7 +302,7 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
             .setTitle("Amount")
             .setPositiveButton("OK") { dialog, which->
                 currentAmount = currentSelection
-                if( currentAmount != 0 && currentFoodType != null) {
+               if( currentAmount != 0 && currentFoodType != null) {
                     lifecycleScope.launch {
                         fridgeViewModel.addToFridge(currentFoodType!!, currentFoodName, currentGram, currentAmount)
                     }

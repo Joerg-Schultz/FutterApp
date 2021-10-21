@@ -1,5 +1,6 @@
 package de.tierwohlteam.android.futterapp.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +39,7 @@ class FridgeViewModel @Inject constructor(
         initialValue = Resource.loading(emptyList())
     )
     suspend fun addToFridge(foodType: FoodType, foodName: String, gram: Int, amount: Int) {
+        Log.d("FOOD", "inserting")
         _insertPacksFlow.value = Event(Resource.loading(null))
         var pack: Pack? = null
         val foodJob = viewModelScope.launch {

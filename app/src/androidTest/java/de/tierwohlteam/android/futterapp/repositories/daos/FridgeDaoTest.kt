@@ -61,7 +61,7 @@ class FridgeDaoTest {
     fun addPack() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
         val pack = Pack(food = food, size = 500)
-        GlobalScope.launch {
+        launch {
             // food has to be inserted before pack (foreign key)
             repository.insertFood(food)
             val state = fridgeDao.addPack(pack)

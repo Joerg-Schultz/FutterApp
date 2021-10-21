@@ -77,7 +77,6 @@ class RatingViewModelTest {
         }
         insertJob.join()
 
-        ratingViewModel.getAllRatings()
         ratingViewModel.allRatings.test {
             val resource = awaitItem()
             assertThat(resource.status).isEqualTo(Status.SUCCESS)

@@ -26,5 +26,10 @@
             tools:layout="@layout/show_fridge_fragment">
     </fragment>
 
-
+    <fragment
+            android:id="@+id/statisticsFragment"
+            android:name="de.tierwohlteam.android.futterapp.fragments.StatisticsFragment"
+            android:label="@string/statistics"
+            tools:layout="@layout/statistics_fragment">
+    </fragment>
 </navigation>

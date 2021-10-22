@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.CalendarItemBinding
-import de.tierwohlteam.android.futterapp.databinding.RatingItemBinding
+import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.Meal
 import de.tierwohlteam.android.futterapp.models.Rating
 import de.tierwohlteam.android.futterapp.viewModels.StatisticsViewModel
@@ -19,6 +19,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarViewHolder>() {
+    lateinit var foodList: List<Food>
 
     // generate a diff list to update only changed items in the RecView
     private val diffCallback = object : DiffUtil.ItemCallback<StatisticsViewModel.CalendarEntry>(){
@@ -97,7 +98,11 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
         timeCell.text = timeString
         row.addView(timeCell,0)
         val foodCell = TextView(table.context)
-        foodCell.text = meal.ingredients.joinToString("\n") { it.foodID.toString() }
+        foodCell.text = meal.ingredients.joinToString("\n") { ingredient ->
+            foodList.filter { it.id == ingredient.foodID }
+                .map { it.name }
+                .first().toString()
+        }
         row.addView(foodCell, 1)
         table.addView(row)
     }

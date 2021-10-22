@@ -21,11 +21,14 @@ import de.tierwohlteam.android.futterapp.databinding.AddRatingFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.RatingFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.ShowCalendarFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.StatisticsFragmentBinding
+import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.viewModels.RatingViewModel
 import de.tierwohlteam.android.futterapp.viewModels.StatisticsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 
 @InternalCoroutinesApi
@@ -67,6 +70,8 @@ class ShowCalendarFragment: Fragment() {
     private val statisticsViewModel: StatisticsViewModel by activityViewModels()
     private lateinit var calendarListAdapter: CalendarListAdapter
 
+    private var foodList: MutableStateFlow<List<Food>> = MutableStateFlow(value = emptyList())
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -85,6 +90,13 @@ class ShowCalendarFragment: Fragment() {
             layoutManager = GridLayoutManager(requireContext(), 2)
         }
         lifecycleScope.launchWhenStarted {
+            statisticsViewModel.allFoods.collect {
+                if (it.status == Status.SUCCESS) {
+                  foodList.value = it.data!!
+                }
+            }
+        }
+        lifecycleScope.launchWhenStarted {
             statisticsViewModel.allEntries.collect { result ->
                 when (result.status) {
                     Status.LOADING -> {
@@ -93,6 +105,7 @@ class ShowCalendarFragment: Fragment() {
                     Status.SUCCESS -> {
                         binding.pBCalendar.visibility = View.GONE
                         result.data?.let { list ->
+                            calendarListAdapter.foodList = foodList.value
                             calendarListAdapter.submitList(list.sortedByDescending { it.date }) }
                     }
                     else -> { /* NO-OP */ }
@@ -100,7 +113,7 @@ class ShowCalendarFragment: Fragment() {
             }
         }
 
-        statisticsViewModel.getEntries()
+        statisticsViewModel.getEntriesTest()
 
     }
 }

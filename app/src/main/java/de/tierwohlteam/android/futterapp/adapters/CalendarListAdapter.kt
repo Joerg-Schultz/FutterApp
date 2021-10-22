@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.CalendarItemBinding
 import de.tierwohlteam.android.futterapp.databinding.RatingItemBinding
+import de.tierwohlteam.android.futterapp.models.Meal
 import de.tierwohlteam.android.futterapp.models.Rating
 import de.tierwohlteam.android.futterapp.viewModels.StatisticsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -61,11 +62,11 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
                     ratings = mutableListOf()
                 }
                 ratings.isEmpty() -> {
-                    //meals.forEach { addMealToTable(it) }
+                    meals.forEach { addMealToTable(it, holder) }
                     meals = mutableListOf()
                 }
                 meals.first().feeding.time <= ratings.first().timeStamp -> {
-                    //addMealToTable(meals.first())
+                    addMealToTable(meals.first(),holder)
                     meals.removeFirst()
                 }
                 else -> {
@@ -86,6 +87,18 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
         val starCell = RatingBar(table.context,null, android.R.attr.ratingBarStyleSmall)
         starCell.rating = rating.value
         row.addView(starCell,1)
+        table.addView(row)
+    }
+    private fun addMealToTable(meal: Meal, holder: CalendarViewHolder) {
+        val table = holder.binding.tableCalendarItem
+        val row = TableRow(table.context)
+        val timeString = "${meal.feeding.time.hour}:${meal.feeding.time.minute}"
+        val timeCell = TextView(table.context)
+        timeCell.text = timeString
+        row.addView(timeCell,0)
+        val foodCell = TextView(table.context)
+        foodCell.text = meal.ingredients.joinToString("\n") { it.foodID.toString() }
+        row.addView(foodCell, 1)
         table.addView(row)
     }
 

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
@@ -20,10 +21,12 @@ import de.tierwohlteam.android.futterapp.databinding.AddRatingFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.RatingFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.ShowCalendarFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.StatisticsFragmentBinding
+import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.viewModels.RatingViewModel
 import de.tierwohlteam.android.futterapp.viewModels.StatisticsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
@@ -81,6 +84,23 @@ class ShowCalendarFragment: Fragment() {
             adapter = calendarListAdapter
             layoutManager = GridLayoutManager(requireContext(), 2)
         }
-        calendarListAdapter.submitList(statisticsViewModel.testList)
+        lifecycleScope.launchWhenStarted {
+            statisticsViewModel.allEntries.collect { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        binding.pBCalendar.visibility = View.VISIBLE
+                    }
+                    Status.SUCCESS -> {
+                        binding.pBCalendar.visibility = View.GONE
+                        result.data?.let { list ->
+                            calendarListAdapter.submitList(list.sortedByDescending { it.date }) }
+                    }
+                    else -> { /* NO-OP */ }
+                }
+            }
+        }
+
+        statisticsViewModel.getEntries()
+
     }
 }

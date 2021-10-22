@@ -1,6 +1,7 @@
 package de.tierwohlteam.android.futterapp.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -38,6 +39,13 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
     override fun onBindViewHolder(holder: CalendarListAdapter.CalendarViewHolder, position: Int) {
         val calendarEntry = differ.currentList[position]
         holder.binding.tvCalendarDate.text = calendarEntry.date.toString()
+        val avgRating = calendarEntry.ratings.map { it.value }.average().toFloat()
+        if (avgRating.isNaN()) {
+            holder.binding.ratingBarCalendarItem.visibility = View.GONE
+        }
+        else {
+            holder.binding.ratingBarCalendarItem.rating = avgRating
+        }
     }
 
     override fun getItemCount(): Int {

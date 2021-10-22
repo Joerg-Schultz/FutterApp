@@ -1,8 +1,12 @@
 package de.tierwohlteam.android.futterapp.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RatingBar
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -46,6 +50,43 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
         else {
             holder.binding.ratingBarCalendarItem.rating = avgRating
         }
+        var meals = calendarEntry.meals
+        meals.sortBy { it.feeding.time }
+        var ratings = calendarEntry.ratings
+        ratings.sortBy { it.timeStamp }
+        while (meals.isNotEmpty() || ratings.isNotEmpty()) {
+            when {
+                meals.isEmpty() -> {
+                    ratings.forEach { addRatingToTable(it, holder) }
+                    ratings = mutableListOf()
+                }
+                ratings.isEmpty() -> {
+                    //meals.forEach { addMealToTable(it) }
+                    meals = mutableListOf()
+                }
+                meals.first().feeding.time <= ratings.first().timeStamp -> {
+                    //addMealToTable(meals.first())
+                    meals.removeFirst()
+                }
+                else -> {
+                    addRatingToTable(ratings.first(),holder)
+                    ratings.removeFirst()
+                }
+            }
+        }
+    }
+
+    private fun addRatingToTable(rating: Rating, holder: CalendarViewHolder) {
+        val table = holder.binding.tableCalendarItem
+        val row = TableRow(table.context)
+        val timeString = "${rating.timeStamp.hour}:${rating.timeStamp.minute}"
+        val timeCell = TextView(table.context)
+        timeCell.text = timeString
+        row.addView(timeCell,0)
+        val starCell = RatingBar(table.context,null, android.R.attr.ratingBarStyleSmall)
+        starCell.rating = rating.value
+        row.addView(starCell,1)
+        table.addView(row)
     }
 
     override fun getItemCount(): Int {

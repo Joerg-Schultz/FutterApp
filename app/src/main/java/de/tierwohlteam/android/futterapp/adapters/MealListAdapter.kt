@@ -57,7 +57,6 @@ class MealListAdapter(private val allFoods: List<Food>) :
         val table = holder.binding.mealTableLayout
         for (ingredient in meal.ingredients) {
             val row = TableRow(table.context)
-            Log.d("FOOD", "ingredient foodID = ${ingredient.foodID}")
             val food = allFoods.firstOrNull() { it.id == ingredient.foodID }
             val cellGroup = TextView(table.context)
             cellGroup.text = food?.group?.toString() ?: "No Group"

@@ -103,7 +103,7 @@ class FutterAppRepository @Inject constructor(
     /**
      * get all Meals
      */
-    val latestMeal: Flow<Resource<Meal>> = flow {
+    val latestMeal: Flow<Resource<Meal?>> = flow {
         emit(Resource.loading(null))
         val dataFlow = mealDao.getLatest()
         emitAll(dataFlow.map { Resource.success(it) })

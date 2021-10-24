@@ -30,5 +30,5 @@ interface MealDao {
     fun getAll(): Flow<List<Meal>>
 
     @Query("SELECT * from feeding where time = (SELECT MAX(time) from feeding)")
-    fun getLatest(): Flow<Meal>
+    fun getLatest(): Flow<Meal?>
 }

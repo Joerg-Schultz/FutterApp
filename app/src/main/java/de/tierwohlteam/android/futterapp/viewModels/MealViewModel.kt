@@ -39,7 +39,7 @@ class MealViewModel @Inject constructor(
         initialValue = Resource.loading(emptyList())
     )
 
-    var latestMeal: StateFlow<Resource<Meal>> = repository.latestMeal.stateIn(
+    var latestMeal: StateFlow<Resource<Meal?>> = repository.latestMeal.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = Resource.loading(null)

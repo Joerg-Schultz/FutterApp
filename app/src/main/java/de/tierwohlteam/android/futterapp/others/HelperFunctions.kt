@@ -1,6 +1,7 @@
 package de.tierwohlteam.android.futterapp.others
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import de.tierwohlteam.android.futterapp.R
 import de.tierwohlteam.android.futterapp.models.FoodType
@@ -25,3 +26,9 @@ fun iconFoodTypeHelper(type: FoodType, context: Context): Drawable? =
         FoodType.ADD_ONS -> context.getDrawable(R.mipmap.ic_addons_foreground)
         else -> null
     }
+
+// https://medium.com/@johanneslagos/dp-to-px-and-viceversa-for-kotlin-d797815d852b
+val Int.dp: Int
+    get() = (this / Resources.getSystem().displayMetrics.density).toInt()
+val Int.px: Int
+    get() = (this * Resources.getSystem().displayMetrics.density).toInt()

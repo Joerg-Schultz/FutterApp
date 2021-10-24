@@ -3,6 +3,7 @@ package de.tierwohlteam.android.futterapp.adapters
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -10,8 +11,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.MealItemBinding
 import de.tierwohlteam.android.futterapp.models.Food
+import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.models.Ingredient
 import de.tierwohlteam.android.futterapp.models.Meal
+import de.tierwohlteam.android.futterapp.others.dp
+import de.tierwohlteam.android.futterapp.others.iconFoodTypeHelper
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,15 +56,20 @@ class MealListAdapter(private val allFoods: List<Food>) :
         val month = timeStamp.monthNumber
         val hour = timeStamp.hour
         val min = timeStamp.minute
-        val dateString = "$dayOfWeek $day.$month $hour:$min"
+        val dateString = "$day.$month $hour:$min"
         holder.binding.tvDate.text = dateString
         val table = holder.binding.mealTableLayout
         for (ingredient in meal.ingredients) {
             val row = TableRow(table.context)
             val food = allFoods.firstOrNull() { it.id == ingredient.foodID }
-            val cellGroup = TextView(table.context)
-            cellGroup.text = food?.group?.toString() ?: "No Group"
-            row.addView(cellGroup, 0)
+            val cellGroupImage = ImageView(table.context)
+            row.addView(cellGroupImage, 0)
+            val icon = iconFoodTypeHelper(food?.group ?: FoodType.OTHERS, cellGroupImage.context)
+            if(icon != null) {
+                cellGroupImage.setImageDrawable(icon)
+            }
+            cellGroupImage.layoutParams.height = 70
+            cellGroupImage.layoutParams.width = 70
             val cellIngredient = TextView(table.context)
             cellIngredient.text = food?.name ?: "No name"
             row.addView(cellIngredient, 1)

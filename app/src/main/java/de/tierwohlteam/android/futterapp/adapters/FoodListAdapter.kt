@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.FoodItemBinding
 import de.tierwohlteam.android.futterapp.models.Food
+import de.tierwohlteam.android.futterapp.others.iconFoodTypeHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -35,8 +36,13 @@ class FoodListAdapter: RecyclerView.Adapter<FoodListAdapter.FoodViewHolder>() {
 
     override fun onBindViewHolder(holder: FoodListAdapter.FoodViewHolder, position: Int) {
         val food = differ.currentList[position]
-        holder.binding.tvFoodname.text = food.name
-        holder.binding.tvFoodGroup.text = food.group.toString()
+        holder.binding.apply {
+            tvFoodname.text = food.name
+            val icon = iconFoodTypeHelper(food.group, imageGroupFoodlist.context)
+            if (icon != null) {
+                imageGroupFoodlist.setImageDrawable(icon)
+            }
+        }
     }
 
     override fun getItemCount(): Int {

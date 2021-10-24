@@ -13,6 +13,7 @@ import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -346,7 +347,8 @@ class ShowFoodFragment: Fragment(R.layout.show_food_fragment) {
         binding.rvFoodlist.apply {
             foodListAdapter = FoodListAdapter()
             adapter = foodListAdapter
-            layoutManager = LinearLayoutManager(requireContext())
+            //layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = GridLayoutManager(requireContext(),2)
         }
         lifecycleScope.launchWhenStarted {
             mealViewModel.allFoods.collect { result ->

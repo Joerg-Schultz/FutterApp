@@ -38,5 +38,6 @@ enum class FoodType {
     CARBS,
     VEGGIES_COOKED,
     VEGGIES_RAW,
+    ADD_ONS,
     OTHERS
 }

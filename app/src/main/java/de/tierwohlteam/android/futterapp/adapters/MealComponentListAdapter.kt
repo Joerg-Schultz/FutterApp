@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.R
 import de.tierwohlteam.android.futterapp.databinding.MealComponentItemBinding
 import de.tierwohlteam.android.futterapp.models.FoodType
+import de.tierwohlteam.android.futterapp.others.iconFoodTypeHelper
 import de.tierwohlteam.android.futterapp.others.translateFoodTypeHelper
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,12 +41,12 @@ class MealComponentListAdapter: RecyclerView.Adapter<MealComponentListAdapter.Go
     override fun onBindViewHolder(holder: MealComponentListAdapter.GoalViewHolder, position: Int) {
         val component = differ.currentList[position]
         holder.binding.apply {
-            tvGroup.text = translateFoodTypeHelper(component.foodGroup, tvGroup.context)
             tvIngredient.text = component.foodName
-            tvGram.text = component.gram.toString()
-            if(component.foodGroup == FoodType.VEGGIES_RAW) {
-                tvGroup.visibility = View.INVISIBLE
-                imageGroup.setImageResource(R.mipmap.ic_carrot_foreground)
+            val gramString = "${component.gram} gr"
+            tvGram.text = gramString
+            val icon = iconFoodTypeHelper(component.foodGroup, imageGroup.context)
+            if(icon != null) {
+                imageGroup.setImageDrawable(icon)
             }
         }
         val params = holder.itemView.layoutParams as RecyclerView.LayoutParams

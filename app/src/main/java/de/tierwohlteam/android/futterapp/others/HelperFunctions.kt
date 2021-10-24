@@ -12,3 +12,6 @@ fun translateFoodTypeHelper(type: FoodType, context: Context): String =
         FoodType.VEGGIES_RAW -> context.getString(R.string.veggiesRaw)
         FoodType.OTHERS -> context.getString((R.string.others))
     }
+
+// TODO add function for icons here
+fun iconFoodTypeHelper(type: FoodType, context: Context): Int = 0 //context.getDrawable(R.drawable.ic_baseline_add_24)

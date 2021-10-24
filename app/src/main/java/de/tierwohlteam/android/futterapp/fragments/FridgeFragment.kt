@@ -32,6 +32,7 @@ import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.models.Pack
 import de.tierwohlteam.android.futterapp.others.Status
+import de.tierwohlteam.android.futterapp.others.translateFoodTypeHelper
 import de.tierwohlteam.android.futterapp.viewModels.FridgeViewModel
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -204,8 +205,8 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
     // this is mainly a copy from mealfragment
     // TODO can I merge this?
     private fun newPack(context: Context) {
-        val foodGroups = FoodType.values().map { translateFoodType(it) }.toTypedArray()
-        val foodMap = FoodType.values().associateWith { translateFoodType(it) }
+        val foodGroups = FoodType.values().map { translateFoodTypeHelper(it, context) }.toTypedArray()
+        val foodMap = FoodType.values().associateWith { translateFoodTypeHelper(it, context) }
         val checkedItem = foodGroups.indexOf(resources.getString(R.string.others))
         currentFoodType = FoodType.OTHERS
         MaterialAlertDialogBuilder(context)
@@ -314,14 +315,5 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
             .setView(numberPicker)
             .show()
     }
-
-    fun translateFoodType(type: FoodType): String =
-        when (type) {
-            FoodType.MEAT -> resources.getString(R.string.meat)
-            FoodType.CARBS -> resources.getString(R.string.carbs)
-            FoodType.VEGGIES_COOKED -> resources.getString(R.string.veggiesCooked)
-            FoodType.VEGGIES_RAW -> resources.getString(R.string.veggiesRaw)
-            FoodType.OTHERS -> resources.getString((R.string.others))
-        }
 }
 

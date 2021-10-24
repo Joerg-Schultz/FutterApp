@@ -1,10 +1,12 @@
 package de.tierwohlteam.android.futterapp.models
 
+import android.content.res.Resources
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
+import de.tierwohlteam.android.futterapp.R
 
 /**
  * The food fed to the dog

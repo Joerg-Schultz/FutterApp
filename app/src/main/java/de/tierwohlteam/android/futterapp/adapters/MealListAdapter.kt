@@ -1,6 +1,5 @@
 package de.tierwohlteam.android.futterapp.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -12,16 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.MealItemBinding
 import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.FoodType
-import de.tierwohlteam.android.futterapp.models.Ingredient
 import de.tierwohlteam.android.futterapp.models.Meal
-import de.tierwohlteam.android.futterapp.others.dp
-import de.tierwohlteam.android.futterapp.others.iconFoodTypeHelper
-import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import de.tierwohlteam.android.futterapp.others.icon
+import de.tierwohlteam.android.futterapp.others.translate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 class MealListAdapter(private val allFoods: List<Food>) :
@@ -51,12 +44,12 @@ class MealListAdapter(private val allFoods: List<Food>) :
     override fun onBindViewHolder(holder: MealListAdapter.GoalViewHolder, position: Int) {
         val meal = differ.currentList[position]
         val timeStamp = meal.feeding.time
-        val dayOfWeek = timeStamp.dayOfWeek
+        val dayOfWeek = timeStamp.dayOfWeek.translate(holder.binding.tvDate.context, short = true)
         val day = timeStamp.dayOfMonth
         val month = timeStamp.monthNumber
         val hour = timeStamp.hour
         val min = timeStamp.minute
-        val dateString = "$day.$month $hour:$min"
+        val dateString = "$dayOfWeek $day.$month $hour:$min"
         holder.binding.tvDate.text = dateString
         val table = holder.binding.mealTableLayout
         for (ingredient in meal.ingredients) {
@@ -64,7 +57,7 @@ class MealListAdapter(private val allFoods: List<Food>) :
             val food = allFoods.firstOrNull() { it.id == ingredient.foodID }
             val cellGroupImage = ImageView(table.context)
             row.addView(cellGroupImage, 0)
-            val icon = iconFoodTypeHelper(food?.group ?: FoodType.OTHERS, cellGroupImage.context)
+            val icon = (food?.group ?: FoodType.OTHERS).icon(cellGroupImage.context)
             if(icon != null) {
                 cellGroupImage.setImageDrawable(icon)
             }

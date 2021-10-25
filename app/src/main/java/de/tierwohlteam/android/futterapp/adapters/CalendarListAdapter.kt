@@ -14,6 +14,7 @@ import de.tierwohlteam.android.futterapp.databinding.CalendarItemBinding
 import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.Meal
 import de.tierwohlteam.android.futterapp.models.Rating
+import de.tierwohlteam.android.futterapp.others.translate
 import de.tierwohlteam.android.futterapp.viewModels.StatisticsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -44,14 +45,7 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
 
     override fun onBindViewHolder(holder: CalendarListAdapter.CalendarViewHolder, position: Int) {
         val calendarEntry = differ.currentList[position]
-        holder.binding.tvCalendarDate.text = calendarEntry.date.toString()
-        val avgRating = calendarEntry.ratings.map { it.value }.average().toFloat()
-        if (avgRating.isNaN()) {
-            holder.binding.ratingBarCalendarItem.visibility = View.GONE
-        }
-        else {
-            holder.binding.ratingBarCalendarItem.rating = avgRating
-        }
+        addHeader(calendarEntry, holder)
         var meals = calendarEntry.meals
         meals.sortBy { it.feeding.time }
         var ratings = calendarEntry.ratings
@@ -77,6 +71,24 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
             }
         }
     }
+
+    private fun addHeader(
+        calendarEntry: StatisticsViewModel.CalendarEntry,
+        holder: CalendarViewHolder
+    ) {
+        val timeStamp = calendarEntry.date
+        val dayOfWeek = timeStamp.dayOfWeek.translate(holder.binding.tvCalendarDate.context, short = true)
+        val day = timeStamp.dayOfMonth
+        val month = timeStamp.monthNumber
+        val dateString = "$dayOfWeek $day.$month"
+        holder.binding.tvCalendarDate.text = dateString
+        val avgRating = calendarEntry.ratings.map { it.value }.average().toFloat()
+        if (avgRating.isNaN()) {
+            holder.binding.ratingBarCalendarItem.visibility = View.GONE
+        }
+        else {
+            holder.binding.ratingBarCalendarItem.rating = avgRating
+        }    }
 
     private fun addRatingToTable(rating: Rating, holder: CalendarViewHolder) {
         val table = holder.binding.tableCalendarItem

@@ -35,7 +35,14 @@
     <string name="content">Content</string>
     <string name="addPacks">Fill</string>
     <string name="amount">Amount</string>
-    <string name="statistics">Statistics</string>
-    <string name="calendar">Calendar</string>
+    <string name="statistics">Statistik</string>
+    <string name="calendar">Kalendar</string>
     <string name="addons">Supplements</string>
+    <string name="monday">Montag</string>
+    <string name="tuesday">Dienstag</string>
+    <string name="wednesday">Mittwoch</string>
+    <string name="thursday">Donnerstag</string>
+    <string name="friday">Freitag</string>
+    <string name="saturday">Samstag</string>
+    <string name="sunday">Sonntag</string>
 </resources>

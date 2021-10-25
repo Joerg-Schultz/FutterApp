@@ -1,16 +1,12 @@
 package de.tierwohlteam.android.futterapp.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import de.tierwohlteam.android.futterapp.R
 import de.tierwohlteam.android.futterapp.databinding.MealComponentItemBinding
-import de.tierwohlteam.android.futterapp.models.FoodType
-import de.tierwohlteam.android.futterapp.others.iconFoodTypeHelper
-import de.tierwohlteam.android.futterapp.others.translateFoodTypeHelper
+import de.tierwohlteam.android.futterapp.others.icon
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -44,7 +40,7 @@ class MealComponentListAdapter: RecyclerView.Adapter<MealComponentListAdapter.Go
             tvIngredient.text = component.foodName
             val gramString = "${component.gram} gr"
             tvGram.text = gramString
-            val icon = iconFoodTypeHelper(component.foodGroup, imageGroup.context)
+            val icon = component.foodGroup.icon(imageGroup.context)
             if(icon != null) {
                 imageGroup.setImageDrawable(icon)
             }

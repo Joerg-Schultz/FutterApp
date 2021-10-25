@@ -5,9 +5,10 @@ import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import de.tierwohlteam.android.futterapp.R
 import de.tierwohlteam.android.futterapp.models.FoodType
+import java.time.DayOfWeek
 
-fun translateFoodTypeHelper(type: FoodType, context: Context): String =
-    when (type) {
+fun FoodType.translate(context: Context): String =
+    when (this) {
         FoodType.MEAT -> context.getString(R.string.meat)
         FoodType.CARBS -> context.getString(R.string.carbs)
         FoodType.VEGGIES_COOKED -> context.getString(R.string.veggiesCooked)
@@ -16,9 +17,8 @@ fun translateFoodTypeHelper(type: FoodType, context: Context): String =
         FoodType.OTHERS -> context.getString((R.string.others))
     }
 
-// TODO add function for icons here
-fun iconFoodTypeHelper(type: FoodType, context: Context): Drawable? =
-    when (type) {
+fun FoodType.icon(context: Context): Drawable? =
+    when (this) {
         FoodType.MEAT -> context.getDrawable(R.mipmap.ic_meat_foreground)
         FoodType.CARBS -> context.getDrawable(R.mipmap.ic_bread_foreground)
         FoodType.VEGGIES_RAW -> context.getDrawable(R.mipmap.ic_fruit_foreground)
@@ -26,6 +26,20 @@ fun iconFoodTypeHelper(type: FoodType, context: Context): Drawable? =
         FoodType.ADD_ONS -> context.getDrawable(R.mipmap.ic_addons_foreground)
         else -> null
     }
+
+fun DayOfWeek.translate(context: Context, short: Boolean = false): String {
+    val result = when (this) {
+        DayOfWeek.MONDAY -> context.getString(R.string.monday)
+        DayOfWeek.TUESDAY -> context.getString(R.string.tuesday)
+        DayOfWeek.WEDNESDAY -> context.getString(R.string.wednesday)
+        DayOfWeek.THURSDAY -> context.getString(R.string.thursday)
+        DayOfWeek.FRIDAY -> context.getString(R.string.friday)
+        DayOfWeek.SATURDAY -> context.getString(R.string.saturday)
+        DayOfWeek.SUNDAY -> context.getString(R.string.sunday)
+    }
+    return if (short) result.substring(0..2) else result
+}
+
 
 // https://medium.com/@johanneslagos/dp-to-px-and-viceversa-for-kotlin-d797815d852b
 val Int.dp: Int

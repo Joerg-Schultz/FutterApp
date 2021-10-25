@@ -23,16 +23,14 @@ import com.google.android.material.tabs.TabLayoutMediator
 import de.tierwohlteam.android.futterapp.R
 import de.tierwohlteam.android.futterapp.adapters.FridgeListAdapter
 import de.tierwohlteam.android.futterapp.adapters.FridgeViewPagerAdapter
-import de.tierwohlteam.android.futterapp.adapters.MealViewPagerAdapter
 import de.tierwohlteam.android.futterapp.databinding.FillFridgeFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.FridgeFragmentBinding
-import de.tierwohlteam.android.futterapp.databinding.MealFragmentBinding
 import de.tierwohlteam.android.futterapp.databinding.ShowFridgeFragmentBinding
 import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.models.Pack
 import de.tierwohlteam.android.futterapp.others.Status
-import de.tierwohlteam.android.futterapp.others.translateFoodTypeHelper
+import de.tierwohlteam.android.futterapp.others.translate
 import de.tierwohlteam.android.futterapp.viewModels.FridgeViewModel
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -205,8 +203,8 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
     // this is mainly a copy from mealfragment
     // TODO can I merge this?
     private fun newPack(context: Context) {
-        val foodGroups = FoodType.values().map { translateFoodTypeHelper(it, context) }.toTypedArray()
-        val foodMap = FoodType.values().associateWith { translateFoodTypeHelper(it, context) }
+        val foodGroups = FoodType.values().map { it.translate(context) }.toTypedArray()
+        val foodMap = FoodType.values().associateWith { it.translate(context) }
         val checkedItem = foodGroups.indexOf(resources.getString(R.string.others))
         currentFoodType = FoodType.OTHERS
         MaterialAlertDialogBuilder(context)

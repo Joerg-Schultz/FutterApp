@@ -34,7 +34,7 @@ import de.tierwohlteam.android.futterapp.databinding.ShowMealsFragmentBinding
 import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.others.Status
-import de.tierwohlteam.android.futterapp.others.translateFoodTypeHelper
+import de.tierwohlteam.android.futterapp.others.translate
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.coroutineScope
@@ -191,8 +191,8 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
 
 
     private fun selectGroup(context: Context) {
-        val foodGroups = FoodType.values().map { translateFoodTypeHelper(it, context) }.toTypedArray()
-        val foodMap = FoodType.values().associateWith { translateFoodTypeHelper(it, context) }
+        val foodGroups = FoodType.values().map { it.translate(context) }.toTypedArray()
+        val foodMap = FoodType.values().associateWith { it.translate(context) }
         val checkedItem = foodGroups.indexOf(resources.getString(R.string.others))
         currentFoodType = FoodType.OTHERS
         MaterialAlertDialogBuilder(context)

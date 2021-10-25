@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.FoodItemBinding
 import de.tierwohlteam.android.futterapp.models.Food
-import de.tierwohlteam.android.futterapp.others.iconFoodTypeHelper
+import de.tierwohlteam.android.futterapp.others.icon
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -38,7 +38,7 @@ class FoodListAdapter: RecyclerView.Adapter<FoodListAdapter.FoodViewHolder>() {
         val food = differ.currentList[position]
         holder.binding.apply {
             tvFoodname.text = food.name
-            val icon = iconFoodTypeHelper(food.group, imageGroupFoodlist.context)
+            val icon = food.group.icon(imageGroupFoodlist.context)
             if (icon != null) {
                 imageGroupFoodlist.setImageDrawable(icon)
             }

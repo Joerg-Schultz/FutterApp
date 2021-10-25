@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RatingBar
+import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -50,22 +51,23 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
         meals.sortBy { it.feeding.time }
         var ratings = calendarEntry.ratings
         ratings.sortBy { it.timeStamp }
+        val table = holder.binding.tableCalendarItem
         while (meals.isNotEmpty() || ratings.isNotEmpty()) {
             when {
                 meals.isEmpty() -> {
-                    ratings.forEach { addRatingToTable(it, holder) }
+                    ratings.forEach { addRatingToTable(it, table) }
                     ratings = mutableListOf()
                 }
                 ratings.isEmpty() -> {
-                    meals.forEach { addMealToTable(it, holder) }
+                    meals.forEach { addMealToTable(it, table) }
                     meals = mutableListOf()
                 }
                 meals.first().feeding.time <= ratings.first().timeStamp -> {
-                    addMealToTable(meals.first(),holder)
+                    addMealToTable(meals.first(),table)
                     meals.removeFirst()
                 }
                 else -> {
-                    addRatingToTable(ratings.first(),holder)
+                    addRatingToTable(ratings.first(),table)
                     ratings.removeFirst()
                 }
             }
@@ -88,10 +90,10 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
         }
         else {
             holder.binding.ratingBarCalendarItem.rating = avgRating
-        }    }
+        }
+    }
 
-    private fun addRatingToTable(rating: Rating, holder: CalendarViewHolder) {
-        val table = holder.binding.tableCalendarItem
+    private fun addRatingToTable(rating: Rating, table: TableLayout) {
         val row = TableRow(table.context)
         val timeString = "${rating.timeStamp.hour}:${rating.timeStamp.minute}"
         val timeCell = TextView(table.context)
@@ -102,8 +104,7 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
         row.addView(starCell,1)
         table.addView(row)
     }
-    private fun addMealToTable(meal: Meal, holder: CalendarViewHolder) {
-        val table = holder.binding.tableCalendarItem
+    private fun addMealToTable(meal: Meal, table: TableLayout) {
         val row = TableRow(table.context)
         val timeString = "${meal.feeding.time.hour}:${meal.feeding.time.minute}"
         val timeCell = TextView(table.context)

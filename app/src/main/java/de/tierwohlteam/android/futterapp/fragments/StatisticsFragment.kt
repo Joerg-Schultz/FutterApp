@@ -88,6 +88,7 @@ class ShowCalendarFragment: Fragment() {
             calendarListAdapter = CalendarListAdapter()
             adapter = calendarListAdapter
             layoutManager = GridLayoutManager(requireContext(), 2)
+            //layoutManager = GridLayoutManager(requireContext(), 1)
         }
         lifecycleScope.launchWhenStarted {
             statisticsViewModel.allFoods.collect {

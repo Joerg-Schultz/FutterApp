@@ -111,7 +111,7 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
         timeCell.text = timeString
         row.addView(timeCell,0)
         val foodCell = TextView(table.context)
-        foodCell.text = meal.ingredients.joinToString("\n") { ingredient ->
+        foodCell.text = meal.ingredients.joinToString("; ") { ingredient ->
             foodList.filter { it.id == ingredient.foodID }
                 .map { it.name }
                 .first().toString()

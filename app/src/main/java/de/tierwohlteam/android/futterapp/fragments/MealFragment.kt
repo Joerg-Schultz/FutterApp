@@ -298,8 +298,8 @@ class ShowMealsFragment: Fragment(R.layout.show_meals_fragment) {
                         binding.rvMeals.apply {
                             mealListAdapter = MealListAdapter(result.data!!)
                             adapter = mealListAdapter
-                            //layoutManager = LinearLayoutManager(requireContext())
-                            layoutManager = GridLayoutManager(requireContext(),2)
+                            layoutManager = GridLayoutManager(requireContext(),1)
+                            //layoutManager = GridLayoutManager(requireContext(),2)
                         }
                     }
                     else -> { /* NO-OP */ }

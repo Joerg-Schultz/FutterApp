@@ -87,8 +87,8 @@ class ShowCalendarFragment: Fragment() {
         binding.rvCalendar.apply {
             calendarListAdapter = CalendarListAdapter()
             adapter = calendarListAdapter
-            layoutManager = GridLayoutManager(requireContext(), 2)
-            //layoutManager = GridLayoutManager(requireContext(), 1)
+            //layoutManager = GridLayoutManager(requireContext(), 2)
+            layoutManager = GridLayoutManager(requireContext(), 1)
         }
         lifecycleScope.launchWhenStarted {
             statisticsViewModel.allFoods.collect {

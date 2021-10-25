@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.RatingItemBinding
 import de.tierwohlteam.android.futterapp.models.Rating
+import de.tierwohlteam.android.futterapp.others.minute
 
 class RatingsListAdapter: RecyclerView.Adapter<RatingsListAdapter.GoalViewHolder>() {
 
@@ -38,7 +39,7 @@ class RatingsListAdapter: RecyclerView.Adapter<RatingsListAdapter.GoalViewHolder
         val day = rating.timeStamp.dayOfMonth
         val month = rating.timeStamp.monthNumber
         val hour = rating.timeStamp.hour
-        val min = rating.timeStamp.minute
+        val min = rating.timeStamp.minute.minute()
         val dateString = "$dayOfWeek $day.$month $hour:$min"
         holder.binding.tvDate.text = dateString
         holder.binding.tvDescription.text = rating.comment

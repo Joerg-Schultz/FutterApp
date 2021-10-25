@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import de.tierwohlteam.android.futterapp.R
 import de.tierwohlteam.android.futterapp.models.FoodType
+import java.text.DecimalFormat
 import java.time.DayOfWeek
 
 fun FoodType.translate(context: Context): String =
@@ -40,6 +41,7 @@ fun DayOfWeek.translate(context: Context, short: Boolean = false): String {
     return if (short) result.substring(0..2) else result
 }
 
+fun Int.minute(): String = DecimalFormat("00").format(this)
 
 // https://medium.com/@johanneslagos/dp-to-px-and-viceversa-for-kotlin-d797815d852b
 val Int.dp: Int

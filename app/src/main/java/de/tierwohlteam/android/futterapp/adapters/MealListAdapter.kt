@@ -1,6 +1,7 @@
 package de.tierwohlteam.android.futterapp.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TableRow
@@ -13,6 +14,7 @@ import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.models.Meal
 import de.tierwohlteam.android.futterapp.others.icon
+import de.tierwohlteam.android.futterapp.others.minute
 import de.tierwohlteam.android.futterapp.others.translate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -48,7 +50,7 @@ class MealListAdapter(private val allFoods: List<Food>) :
         val day = timeStamp.dayOfMonth
         val month = timeStamp.monthNumber
         val hour = timeStamp.hour
-        val min = timeStamp.minute
+        val min = timeStamp.minute.minute()
         val dateString = "$dayOfWeek $day.$month $hour:$min"
         holder.binding.tvDate.text = dateString
         val table = holder.binding.mealTableLayout
@@ -65,9 +67,12 @@ class MealListAdapter(private val allFoods: List<Food>) :
             cellGroupImage.layoutParams.width = 70
             val cellIngredient = TextView(table.context)
             cellIngredient.text = food?.name ?: "No name"
+            cellIngredient.setPadding(16,0,0,0)
             row.addView(cellIngredient, 1)
             val cellGram = TextView(table.context)
-            cellGram.text = ingredient.gram.toString()
+            val gramText = "${ingredient.gram} gr"
+            cellGram.text = gramText
+            cellGram.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
             row.addView(cellGram, 2)
             table.addView(row)
         }

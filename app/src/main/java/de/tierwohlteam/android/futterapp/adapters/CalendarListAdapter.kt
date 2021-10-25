@@ -15,9 +15,11 @@ import de.tierwohlteam.android.futterapp.databinding.CalendarItemBinding
 import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.Meal
 import de.tierwohlteam.android.futterapp.models.Rating
+import de.tierwohlteam.android.futterapp.others.minute
 import de.tierwohlteam.android.futterapp.others.translate
 import de.tierwohlteam.android.futterapp.viewModels.StatisticsViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.text.DecimalFormat
 
 @ExperimentalCoroutinesApi
 class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarViewHolder>() {
@@ -98,19 +100,23 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
         val timeString = "${rating.timeStamp.hour}:${rating.timeStamp.minute}"
         val timeCell = TextView(table.context)
         timeCell.text = timeString
+        timeCell.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
         row.addView(timeCell,0)
         val starCell = RatingBar(table.context,null, android.R.attr.ratingBarStyleSmall)
         starCell.rating = rating.value
+        starCell.setPadding(16,0,0,0)
         row.addView(starCell,1)
         table.addView(row)
     }
     private fun addMealToTable(meal: Meal, table: TableLayout) {
         val row = TableRow(table.context)
-        val timeString = "${meal.feeding.time.hour}:${meal.feeding.time.minute}"
+        val timeString = "${meal.feeding.time.hour}:${meal.feeding.time.minute.minute()}"
         val timeCell = TextView(table.context)
         timeCell.text = timeString
+        timeCell.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
         row.addView(timeCell,0)
         val foodCell = TextView(table.context)
+        foodCell.setPadding(16,0,0,0)
         foodCell.text = meal.ingredients.joinToString("; ") { ingredient ->
             foodList.filter { it.id == ingredient.foodID }
                 .map { it.name }

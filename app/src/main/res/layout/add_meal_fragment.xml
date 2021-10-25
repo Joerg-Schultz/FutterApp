@@ -14,8 +14,9 @@
             android:id="@+id/rv_meal" android:layout_marginEnd="8dp" android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"/>
     <Button
-            android:text="@string/add_component"
-            style="?attr/materialButtonOutlinedStyle"
+            android:text="@string/ingredient"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+            app:icon="@drawable/ic_baseline_add_24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_addingredient"

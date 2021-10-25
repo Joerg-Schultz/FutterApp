@@ -6,11 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import de.tierwohlteam.android.futterapp.R
 import de.tierwohlteam.android.futterapp.databinding.FoodItemBinding
 import de.tierwohlteam.android.futterapp.databinding.FridgeItemBinding
 import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.Pack
 import de.tierwohlteam.android.futterapp.models.PacksInFridge
+import de.tierwohlteam.android.futterapp.others.icon
 
 class FridgeListAdapter(val amountSelector: ((pack: Pack, context: Context) -> Unit)? = null): RecyclerView.Adapter<FridgeListAdapter.FridgeViewHolder>() {
 
@@ -40,10 +42,15 @@ class FridgeListAdapter(val amountSelector: ((pack: Pack, context: Context) -> U
     override fun onBindViewHolder(holder: FridgeListAdapter.FridgeViewHolder, position: Int) {
         val packs = differ.currentList[position]
         holder.binding.apply {
-            tvFridgeFoodgroup.text = packs.pack.food.group.toString()
+            val icon = packs.pack.food.group.icon(fridgeImageGroup.context)
+            if (icon != null) {
+                fridgeImageGroup.setImageDrawable(icon)
+            }
             tvFridgeFoodname.text = packs.pack.food.name
-            tvFridgeGram.text = packs.pack.size.toString()
-            tvFridgeAmount.text = packs.amount.toString()
+            val gramString = "${packs.pack.size} gr"
+            tvFridgeGram.text = gramString
+            val amountString = "${packs.amount} ${tvFridgeAmount.context.getString(R.string.pack)}"
+            tvFridgeAmount.text = amountString
         }
         if(amountSelector != null) {
             holder.itemView.setOnClickListener { view ->

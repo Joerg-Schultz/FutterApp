@@ -14,32 +14,40 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <TextView
-                android:text="@string/group"
-                android:layout_width="96dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_fridge_foodgroup"
-                tools:layout_editor_absoluteX="1dp" app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+        <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitXY"
+                android:id="@+id/fridge_image_group"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/group"/>
         <TextView
                 android:text="@string/food"
                 android:layout_width="97dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_fridge_foodname"
-                app:layout_constraintStart_toEndOf="@+id/tv_fridge_foodgroup" app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintStart_toEndOf="@+id/fridge_image_group"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" android:layout_marginStart="24dp"/>
         <TextView
                 android:text="@string/gram"
                 android:layout_width="97dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_fridge_gram"
-                app:layout_constraintStart_toEndOf="@+id/tv_fridge_foodname" app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_fridge_foodname"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
         <TextView
                 android:text="@string/amount"
                 android:layout_width="97dp"
-                android:layout_height="wrap_content" android:id="@+id/tv_fridge_amount"
-                app:layout_constraintStart_toEndOf="@+id/tv_fridge_gram" app:layout_constraintTop_toTopOf="parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_fridge_amount"
+                app:layout_constraintStart_toEndOf="@+id/tv_fridge_gram"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

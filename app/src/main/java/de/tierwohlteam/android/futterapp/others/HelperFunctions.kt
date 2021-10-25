@@ -27,7 +27,24 @@ fun FoodType.icon(context: Context): Drawable? =
         FoodType.ADD_ONS -> context.getDrawable(R.mipmap.ic_addons_foreground)
         else -> null
     }
-
+fun FoodType.gramSteps(): List<Int> =
+    when (this) {
+        FoodType.MEAT -> (50..500 step 50).toList()
+        FoodType.CARBS -> (20..250 step 10).toList()
+        FoodType.VEGGIES_RAW -> (20..200 step 20).toList()
+        FoodType.VEGGIES_COOKED -> (20..200 step 20).toList()
+        FoodType.ADD_ONS -> (1..20 step 1).toList()
+        else -> (10..200 step 10).toList()
+    }
+fun FoodType.defaultGram() : Int =
+    when (this) {
+        FoodType.MEAT -> 250
+        FoodType.CARBS -> 50
+        FoodType.VEGGIES_RAW -> 100
+        FoodType.VEGGIES_COOKED -> 100
+        FoodType.ADD_ONS -> 5
+        else -> 10
+    }
 fun DayOfWeek.translate(context: Context, short: Boolean = false): String {
     val result = when (this) {
         DayOfWeek.MONDAY -> context.getString(R.string.monday)

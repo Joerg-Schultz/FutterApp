@@ -34,6 +34,8 @@ import de.tierwohlteam.android.futterapp.databinding.ShowMealsFragmentBinding
 import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.models.FoodType
 import de.tierwohlteam.android.futterapp.others.Status
+import de.tierwohlteam.android.futterapp.others.defaultGram
+import de.tierwohlteam.android.futterapp.others.gramSteps
 import de.tierwohlteam.android.futterapp.others.translate
 import de.tierwohlteam.android.futterapp.viewModels.MealViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -243,14 +245,14 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
 
     private fun selectGram(context: Context) {
         val numberPicker = NumberPicker(context)
-        val gramSteps = (50..500 step 50).toList()
-        var currentSelection = 250
+        val gramSteps = currentFoodType?.gramSteps() ?: (0..200 step 10).toList()
+        var currentSelection = currentFoodType?.defaultGram() ?: 10
         numberPicker.apply {
             wrapSelectorWheel = true
             minValue = 0
             maxValue = gramSteps.lastIndex
             displayedValues = gramSteps.map { it.toString() }.toTypedArray()
-            value = gramSteps.lastIndex / 2
+            value = gramSteps.indexOfFirst { it == currentSelection }
             setOnValueChangedListener { picker, oldVal, newVal ->
                 currentSelection = gramSteps[newVal]
             }

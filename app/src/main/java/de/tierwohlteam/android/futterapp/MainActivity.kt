@@ -14,6 +14,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: MainActivityBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_FutterApp)
+        //setContentView(R.layout.main_activity)
         binding = MainActivityBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)

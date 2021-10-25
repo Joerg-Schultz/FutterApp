@@ -18,7 +18,7 @@
         <item name="backgroundTint">?attr/colorAccent</item>
     </style>
 
-<!--    <style name="splashScreenTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="splashScreenTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="android:windowBackground">
             @drawable/splash_image
         </item>
@@ -26,5 +26,5 @@
         <item name="colorPrimaryVariant">@color/primary_dark</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="statusBarBackground">@color/primary</item>
-    </style> -->
+    </style>
 </resources>

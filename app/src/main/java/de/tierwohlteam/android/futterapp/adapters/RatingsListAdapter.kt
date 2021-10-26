@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import de.tierwohlteam.android.futterapp.databinding.RatingItemBinding
 import de.tierwohlteam.android.futterapp.models.Rating
 import de.tierwohlteam.android.futterapp.others.minute
+import de.tierwohlteam.android.futterapp.others.translate
 
 class RatingsListAdapter: RecyclerView.Adapter<RatingsListAdapter.GoalViewHolder>() {
 
@@ -35,7 +36,7 @@ class RatingsListAdapter: RecyclerView.Adapter<RatingsListAdapter.GoalViewHolder
     override fun onBindViewHolder(holder: RatingsListAdapter.GoalViewHolder, position: Int) {
         val rating = differ.currentList[position]
         holder.binding.ratingBar.rating = rating.value
-        val dayOfWeek = rating.timeStamp.dayOfWeek
+        val dayOfWeek = rating.timeStamp.dayOfWeek.translate(holder.binding.tvDate.context, short = true)
         val day = rating.timeStamp.dayOfMonth
         val month = rating.timeStamp.monthNumber
         val hour = rating.timeStamp.hour

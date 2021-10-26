@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import kotlinx.datetime.*
+import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 
 @Entity(
     tableName = "rating"
@@ -19,7 +20,7 @@ import kotlinx.datetime.*
 data class Rating(
     @PrimaryKey
     val id: Uuid = uuid4(),
-    val timeStamp: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC),
+    val timeStamp: LocalDateTime = Clock.System.now().toLocalDateTime(currentSystemDefault()),
     val value: Float,
     val comment: String) {
 }

@@ -6,6 +6,7 @@ import com.benasher44.uuid.uuid4
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 import kotlinx.datetime.toLocalDateTime
 
 data class Meal(
@@ -27,7 +28,7 @@ data class Meal(
     tableName = "feeding"
 )
 data class Feeding(
-    val time: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC),
+    val time: LocalDateTime = Clock.System.now().toLocalDateTime(currentSystemDefault()),
     @PrimaryKey
     val id: Uuid = uuid4()
 )

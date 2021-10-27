@@ -9,10 +9,14 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.tierwohlteam.android.futterapp.models.*
 import de.tierwohlteam.android.futterapp.others.Status
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Test
 import org.junit.Before
@@ -36,14 +40,17 @@ class FutterAppRepositoryTest {
     @Inject
     lateinit var repository: FutterAppRepository
 
+    private val dispatcher = TestCoroutineDispatcher()
     @Before
     internal fun setup() {
         hiltRule.inject()
+        Dispatchers.setMain(dispatcher)
     }
     @After
     @Throws(IOException::class)
     fun closeDb() {
         db.close()
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -101,12 +108,18 @@ class FutterAppRepositoryTest {
         assertThat(carbGrams).isEqualTo(50)
     }
 
+    @OptIn(ExperimentalTime::class)
     @Test
     fun fridgeContent() = runBlockingTest {
-        val content: List<PacksInFridge> = repository.fridgeContent()
-        assertThat(content).isEmpty()
+        repository.fridgeContent.test {
+            val resourceBefore = awaitItem()
+            assertThat(resourceBefore.status).isEqualTo(Status.LOADING)
+            val resourceAfter = awaitItem()
+            assertThat(resourceAfter.status).isEqualTo(Status.SUCCESS)
+            assertThat(resourceAfter.data).isEmpty()
+        }
     }
-
+/*
     @Test
     fun addPackToFridge() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
@@ -137,4 +150,6 @@ class FutterAppRepositoryTest {
             assertThat(repository.fridgeContent()).contains(PacksInFridge(pack, 0))
         }
     }
+
+ */
 }

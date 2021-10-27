@@ -104,5 +104,4 @@ class FridgeTest {
         val foodInDrawer = Fridge.FoodInDrawer(drawer,food)
         assertThat(foodInDrawer.food).isEqualTo(food)
     }
-
 }

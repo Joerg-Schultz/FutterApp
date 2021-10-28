@@ -111,13 +111,49 @@ class FutterAppRepositoryTest {
 
     @OptIn(ExperimentalTime::class)
     @Test
-    fun fridgeContentEmpty() = runBlockingTest {
+    fun fridgeContentEmptyFridge() = runBlockingTest {
         repository.fridgeContent.test {
             val resourceBefore = awaitItem()
             assertThat(resourceBefore.status).isEqualTo(Status.LOADING)
             val resourceAfter = awaitItem()
             assertThat(resourceAfter.status).isEqualTo(Status.SUCCESS)
             assertThat(resourceAfter.data).isEmpty()
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+    fun fridgeContentWithEmpty() = runBlockingTest {
+        val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
+        repository.insertFood(food)
+        val size = 500
+        val pack = Pack(food = food, size = size)
+        val amount = 1
+        repository.fridgeContentWithEmpty.test {
+            repository.addPacksToFridge(pack, amount)
+            repository.getPackFromFridge(pack)
+            val emptyDrawer = expectMostRecentItem()
+            assertThat(emptyDrawer.status).isEqualTo(Status.SUCCESS)
+            assertThat(emptyDrawer.data).isNotNull()
+            assertThat(emptyDrawer.data!!.first().amount).isEqualTo(0)
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+    fun fridgeContentEmptyHidden() = runBlockingTest {
+        val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
+        repository.insertFood(food)
+        val size = 500
+        val pack = Pack(food = food, size = size)
+        val amount = 1
+        repository.fridgeContent.test {
+            repository.addPacksToFridge(pack, amount)
+            repository.getPackFromFridge(pack)
+            val emptyDrawer = expectMostRecentItem()
+            assertThat(emptyDrawer.status).isEqualTo(Status.SUCCESS)
+            assertThat(emptyDrawer.data).isNotNull()
+            assertThat(emptyDrawer.data).isEmpty()
         }
     }
 

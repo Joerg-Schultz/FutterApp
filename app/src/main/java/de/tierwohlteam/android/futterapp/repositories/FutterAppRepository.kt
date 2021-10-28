@@ -128,9 +128,11 @@ class FutterAppRepository @Inject constructor(
      * content + empty
      */
     val fridgeContentWithEmpty: Flow<Resource<List<PacksInFridge>>> = flow {
-        emit(Resource.loading(null))
         val dataFlow = fridgeDao.contentWithEmpty()
-        emitAll(dataFlow.map { Resource.success(it) })
+        dataFlow.collect {
+            emit(Resource.loading(null))
+            emit(Resource.success(it))
+        }
     }
 
     /**

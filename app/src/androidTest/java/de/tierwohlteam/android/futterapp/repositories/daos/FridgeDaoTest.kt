@@ -83,22 +83,53 @@ class FridgeDaoTest {
         val state = fridgeDao.addPacks(pack, amount)
         assertThat(state.amount).isEqualTo(amount)
     }
-/*
+
+    @OptIn(ExperimentalTime::class)
     @Test
-    fun getPack() = runBlockingTest {
+    fun addPackContent() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
-        val pack = Pack(food = food, size = 500)
-        GlobalScope.launch {
-            repository.insertFood(food)
-            fridgeDao.addPack(pack)
-            val content = fridgeDao.content()
-            assertThat(content).contains(PacksInFridge(pack, 1))
-            val state = fridgeDao.getPack(pack)
-            assertThat(state).isNotNull()
-            assertThat(state!!.amount).isEqualTo(0)
-            assertThat(fridgeDao.content()).contains(PacksInFridge(pack, 0))
+        val size = 500
+        val pack = Pack(food = food, size = size)
+        val amount = 2
+        // food has to be inserted before pack (foreign key)
+        repository.insertFood(food)
+        fridgeDao.addPacks(pack, amount)
+        val content = fridgeDao.content()
+        content.test {
+            val currentPacks = awaitItem()
+            assertThat(currentPacks).hasSize(1)
+            assertThat(currentPacks.first().amount).isEqualTo(amount)
         }
     }
 
- */
+    @Test
+    fun getPack() = runBlockingTest {
+        val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
+        val size = 500
+        val pack = Pack(food = food, size = size)
+        repository.insertFood(food)
+        fridgeDao.addPacks(pack)
+        val state = fridgeDao.getPack(pack)
+        assertThat(state).isNotNull()
+        assertThat(state!!.amount).isEqualTo(0)
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+    fun getPackContent() = runBlockingTest {
+        val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
+        val size = 500
+        val pack = Pack(food = food, size = size)
+        repository.insertFood(food)
+        fridgeDao.addPacks(pack)
+        val content = fridgeDao.content()
+        content.test {
+            val currentPacks = awaitItem()
+            assertThat(currentPacks).hasSize(1)
+            assertThat(currentPacks.first().amount).isEqualTo(1)
+            fridgeDao.getPack(pack)
+            val emptyFridge = awaitItem()
+            assertThat(emptyFridge).isEmpty()
+        }
+    }
 }

@@ -139,7 +139,7 @@ class FutterAppRepository @Inject constructor(
      * @param[pack] Pack
      * @return PacksInFridge with updated count for this pack
      */
-    suspend fun addPacksToFridge(pack: Pack, amount: Int = 0): PacksInFridge =
+    suspend fun addPacksToFridge(pack: Pack, amount: Int = 1): PacksInFridge =
         fridgeDao.addPacks(pack, amount)
 
     /**

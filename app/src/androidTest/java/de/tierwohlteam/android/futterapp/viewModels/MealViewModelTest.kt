@@ -7,6 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.tierwohlteam.android.futterapp.models.FoodType
+import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.repositories.FutterAppRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -92,6 +93,51 @@ class MealViewModelTest {
         mealViewModel.ingredientList.test {
             val componentList = awaitItem()
             assertThat(componentList).isEmpty()
+        }
+    }
+
+    @Test
+    fun allMealsTest() = runBlockingTest {
+        val mealViewModel = MealViewModel(repository)
+        mealViewModel.allMeals.test {
+            val meals = awaitItem()
+            assertThat(meals.status).isEqualTo(Status.SUCCESS)
+            assertThat(meals.data).isEmpty()
+        }
+    }
+
+    @Test
+    fun saveMealTest() = runBlockingTest {
+        val mealViewModel = MealViewModel(repository)
+        val foodType = FoodType.MEAT
+        val foodName = "Pute"
+        val gram = 250
+        mealViewModel.addIngredient(foodType, foodName, gram)
+        mealViewModel.saveMeal()
+        mealViewModel.allMeals.test {
+            val meals = awaitItem()
+            assertThat(meals.status).isEqualTo(Status.SUCCESS)
+            assertThat(meals.data).hasSize(1)
+            val dbMeal = meals.data!!.first()
+            assertThat(dbMeal.ingredients).hasSize(1)
+            assertThat(dbMeal.ingredients.first().gram).isEqualTo(gram)
+        }
+    }
+
+    @Test
+    fun insertMealFlowTest() = runBlockingTest {
+        val mealViewModel = MealViewModel(repository)
+        val foodType = FoodType.MEAT
+        val foodName = "Pute"
+        val gram = 250
+        mealViewModel.addIngredient(foodType, foodName, gram)
+        mealViewModel.saveMeal()
+
+        mealViewModel.insertMealFlow.test {
+            val insertResult = awaitItem()
+            val resource = insertResult.getContentIfNotHandled()!!
+            assertThat(resource.status).isEqualTo(Status.SUCCESS)
+            assertThat(resource.data!!.ingredients).hasSize(1)
         }
     }
 }

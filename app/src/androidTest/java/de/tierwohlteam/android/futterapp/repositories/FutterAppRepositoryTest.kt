@@ -135,7 +135,7 @@ class FutterAppRepositoryTest {
 
     @OptIn(ExperimentalTime::class)
     @Test
-    fun fridgeContent() = runBlockingTest {
+    fun fridgeContentAdd() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
         val size = 500
         val pack = Pack(food = food, size = size)
@@ -155,22 +155,29 @@ class FutterAppRepositoryTest {
             assertThat(contentAfter.data!!.first().amount).isEqualTo(amount)
         }
     }
-/*
+
+    @OptIn(ExperimentalTime::class)
     @Test
     fun getPackFromFridge() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
-        val pack = Pack(food = food, size = 500)
-        launch {
-            repository.insertFood(food)
-            repository.addPackToFridge(pack)
-            val content = repository.fridgeContent()
-            assertThat(content).contains(PacksInFridge(pack, 1))
-            val state = repository.getPackFromFridge(pack)
-            assertThat(state).isNotNull()
-            assertThat(state!!.amount).isEqualTo(0)
-            assertThat(repository.fridgeContent()).contains(PacksInFridge(pack, 0))
+        val size = 500
+        val pack = Pack(food = food, size = size)
+        repository.insertFood(food)
+        val amount =7
+        repository.addPacksToFridge(pack, amount = amount)
+        repository.fridgeContent.test {
+            val contentLoading = awaitItem()
+            val fullContent = awaitItem()
+            val packsInFridge = repository.getPackFromFridge(pack)
+            assertThat(packsInFridge).isNotNull()
+            assertThat(packsInFridge!!.amount).isEqualTo(amount - 1)
+            val emptiedContentLoading = awaitItem()
+            assertThat(emptiedContentLoading.status).isEqualTo(Status.LOADING)
+            val emptiedContent = awaitItem()
+            assertThat(emptiedContent.status).isEqualTo(Status.SUCCESS)
+            assertThat(emptiedContent.data).isNotNull()
+            assertThat(emptiedContent.data!!.first().amount).isEqualTo(amount - 1)
+            cancelAndIgnoreRemainingEvents()
         }
     }
-
- */
 }

@@ -31,6 +31,7 @@ object AppModule {
     @Provides
     fun provideRepository(db: FutterAppDB) = FutterAppRepository(db)
 
+/* Do I have to inject the Daos? I should be working only with the repository
     @Singleton
     @Provides
     fun provideRatingDao(db: FutterAppDB) = db.ratingDao()
@@ -42,5 +43,5 @@ object AppModule {
     @Singleton
     @Provides
     fun provideMealDao(db: FutterAppDB) = db.mealDao()
-
+*/
 }

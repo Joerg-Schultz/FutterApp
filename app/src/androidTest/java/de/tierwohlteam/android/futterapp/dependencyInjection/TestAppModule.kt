@@ -13,6 +13,7 @@ import org.junit.Test
 
 import org.junit.Assert.*
 import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
 @TestInstallIn(
@@ -21,6 +22,7 @@ import javax.inject.Named
 )
 object TestAppModule {
     @Provides
+    @Singleton
     fun provideInMemoryPTDdb(@ApplicationContext app: Context) =
         Room.inMemoryDatabaseBuilder(app, FutterAppDB::class.java)
             .allowMainThreadQueries()

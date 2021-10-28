@@ -35,6 +35,7 @@ class FutterAppRepositoryTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    //injected ony to close db after end of tests
     @Inject
     lateinit var db: FutterAppDB
     @Inject
@@ -110,7 +111,7 @@ class FutterAppRepositoryTest {
 
     @OptIn(ExperimentalTime::class)
     @Test
-    fun fridgeContent() = runBlockingTest {
+    fun fridgeContentEmpty() = runBlockingTest {
         repository.fridgeContent.test {
             val resourceBefore = awaitItem()
             assertThat(resourceBefore.status).isEqualTo(Status.LOADING)
@@ -119,22 +120,42 @@ class FutterAppRepositoryTest {
             assertThat(resourceAfter.data).isEmpty()
         }
     }
-/*
+
     @Test
     fun addPackToFridge() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
-        val pack = Pack(food = food, size = 500)
-        launch {
-            // food has to be inserted before pack (foreign key)
-            repository.insertFood(food)
-            val state = repository.addPackToFridge(pack)
-            assertThat(state).isNotNull()
-            assertThat(state.amount).isEqualTo(1)
-            val content = repository.fridgeContent()
-            assertThat(content).contains(PacksInFridge(pack, 1))
-        }
+        val size = 500
+        val pack = Pack(food = food, size = size)
+        val amount = 2
+        // food has to be inserted before pack (foreign key)
+        repository.insertFood(food)
+        val state = repository.addPacksToFridge(pack, amount)
+        assertThat(state.amount).isEqualTo(amount)
     }
 
+    @OptIn(ExperimentalTime::class)
+    @Test
+    fun fridgeContent() = runBlockingTest {
+        val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
+        val size = 500
+        val pack = Pack(food = food, size = size)
+        val amount = 2
+        // food has to be inserted before pack (foreign key)
+        repository.insertFood(food)
+        val state = repository.addPacksToFridge(pack,amount)
+        assertThat(state.amount).isEqualTo(amount)
+        repository.fridgeContent.test {
+            val contentBefore = awaitItem()
+            assertThat(contentBefore.status).isEqualTo(Status.LOADING)
+            val contentAfter = awaitItem()
+            assertThat(contentAfter.status).isEqualTo(Status.SUCCESS)
+            assertThat(contentAfter.data).isNotNull()
+            assertThat(contentAfter.data!!.first().pack.food).isEqualTo(food)
+            assertThat(contentAfter.data!!.first().pack.size).isEqualTo(size)
+            assertThat(contentAfter.data!!.first().amount).isEqualTo(amount)
+        }
+    }
+/*
     @Test
     fun getPackFromFridge() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")

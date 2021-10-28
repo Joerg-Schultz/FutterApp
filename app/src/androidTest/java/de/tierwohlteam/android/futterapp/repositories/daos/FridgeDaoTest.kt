@@ -64,29 +64,26 @@ class FridgeDaoTest {
 
     @OptIn(ExperimentalTime::class)
     @Test
-    fun content() = runBlockingTest {
+    fun contentEmpty() = runBlockingTest {
         val contentFlow: Flow<List<PacksInFridge>> = fridgeDao.content()
         contentFlow.test {
             val content = awaitItem()
             assertThat(content).isEmpty()
         }
     }
-/*
+
     @Test
     fun addPack() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")
-        val pack = Pack(food = food, size = 500)
-        launch {
-            // food has to be inserted before pack (foreign key)
-            repository.insertFood(food)
-            val state = fridgeDao.addPack(pack)
-            assertThat(state).isNotNull()
-            assertThat(state.amount).isEqualTo(1)
-            val content = fridgeDao.content()
-            assertThat(content).contains(PacksInFridge(pack, 1))
-        }
+        val size = 500
+        val pack = Pack(food = food, size = size)
+        val amount = 2
+        // food has to be inserted before pack (foreign key)
+        repository.insertFood(food)
+        val state = fridgeDao.addPacks(pack, amount)
+        assertThat(state.amount).isEqualTo(amount)
     }
-
+/*
     @Test
     fun getPack() = runBlockingTest {
         val food = Food(group = FoodType.MEAT, name = "RinderMuskel")

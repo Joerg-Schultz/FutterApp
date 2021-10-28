@@ -140,4 +140,39 @@ class MealViewModelTest {
             assertThat(resource.data!!.ingredients).hasSize(1)
         }
     }
+
+    @Test
+    fun latestMealTest() = runBlockingTest {
+        val mealViewModel = MealViewModel(repository)
+        val foodType = FoodType.MEAT
+        val foodName = "Pute"
+        val gram = 250
+        mealViewModel.addIngredient(foodType, foodName, gram)
+        val secondGram = 500
+        mealViewModel.addIngredient(foodType, foodName, secondGram)
+        mealViewModel.saveMeal()
+        mealViewModel.latestMeal.test {
+            val meal = awaitItem()
+            assertThat(meal.status).isEqualTo(Status.SUCCESS)
+            assertThat(meal.data!!.ingredients).hasSize(2)
+            assertThat(meal.data!!.ingredients[1].gram).isEqualTo(secondGram)
+        }
+    }
+
+    @Test
+    fun allFoodsTest() = runBlockingTest {
+        val mealViewModel = MealViewModel(repository)
+        val foodType = FoodType.MEAT
+        val foodName = "Pute"
+        val gram = 250
+        mealViewModel.addIngredient(foodType, foodName, gram)
+        mealViewModel.saveMeal()
+        mealViewModel.allFoods.test {
+            val resource = awaitItem()
+            assertThat(resource.data).isNotNull()
+            val foodList = resource.data!!
+            assertThat(foodList).hasSize(1)
+            assertThat(foodList.first().group).isEqualTo(foodType)
+        }
+    }
 }

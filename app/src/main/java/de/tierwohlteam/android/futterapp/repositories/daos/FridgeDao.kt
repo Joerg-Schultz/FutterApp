@@ -33,7 +33,7 @@ interface FridgeDao {
     suspend fun insertDrawer(drawer: Fridge.Drawer)
 
     fun content(): Flow<List<PacksInFridge>> = allDrawers().map { list ->
-            list.map { PacksInFridge(Pack(it.food, it.drawer.packSize), it.drawer.amount) }
+        list.map { PacksInFridge(Pack(it.food, it.drawer.packSize), it.drawer.amount) }
     }
 
     fun contentWithEmpty(): Flow<List<PacksInFridge>> = allDrawersWithZero().map { list ->

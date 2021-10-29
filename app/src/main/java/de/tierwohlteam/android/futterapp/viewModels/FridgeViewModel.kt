@@ -26,7 +26,7 @@ class FridgeViewModel @Inject constructor(
     val insertPacksFlow = _insertPacksFlow as StateFlow<Event<Resource<PacksInFridge>>>
 
     private val _deletePackFlow: MutableStateFlow<Event<Resource<PacksInFridge>>> = MutableStateFlow(Event(Resource.empty()))
-    val deletePacksFlow = _deletePackFlow as StateFlow<Event<Resource<PacksInFridge>>>
+    val deletePackFlow = _deletePackFlow as StateFlow<Event<Resource<PacksInFridge>>>
 
     val content: StateFlow<Resource<List<PacksInFridge>>> = repository.fridgeContent.stateIn(
         scope = viewModelScope,
@@ -39,7 +39,6 @@ class FridgeViewModel @Inject constructor(
         initialValue = Resource.loading(emptyList())
     )
     suspend fun addToFridge(foodType: FoodType, foodName: String, gram: Int, amount: Int) {
-        Log.d("FOOD", "inserting")
         _insertPacksFlow.value = Event(Resource.loading(null))
         var pack: Pack? = null
         val foodJob = viewModelScope.launch {

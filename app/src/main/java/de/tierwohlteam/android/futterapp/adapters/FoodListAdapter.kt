@@ -9,9 +9,10 @@ import de.tierwohlteam.android.futterapp.databinding.FoodItemBinding
 import de.tierwohlteam.android.futterapp.models.Food
 import de.tierwohlteam.android.futterapp.others.icon
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class FoodListAdapter: RecyclerView.Adapter<FoodListAdapter.FoodViewHolder>() {
+class FoodListAdapter @Inject constructor(): RecyclerView.Adapter<FoodListAdapter.FoodViewHolder>() {
 
     // generate a diff list to update only changed items in the RecView
     private val diffCallback = object : DiffUtil.ItemCallback<Food>(){

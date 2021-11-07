@@ -3,7 +3,6 @@ package de.tierwohlteam.android.futterapp.fragments
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,7 +98,6 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("MEALCRASH", "In onviewcreated")
         binding.rvMeal.apply {
             mealComponentListAdapter = MealComponentListAdapter()
             adapter = mealComponentListAdapter
@@ -120,29 +118,12 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         }
         lifecycleScope.launchWhenStarted {
             mealViewModel.ingredientList.collect {
-                Log.d("MEALCRASH", "In collecting ingredientlist")
                 mealComponentListAdapter.submitList(it)
             }
         }
         lifecycleScope.launchWhenStarted {
             mealViewModel.allFoods.collect { result ->
-                Log.d("MEALCRASH", "In collecting allFoods")
                 if (result.status == Status.SUCCESS) foodList = result.data!!
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            mealViewModel.latestMeal.collect{ result ->
-                Log.d("MEALCRASH", "In collecting latestMeal")
-                if (result.status == Status.SUCCESS) {
-                    mealViewModel.emptyIngredientList()
-                    val ingredients = result.data?.ingredients ?: emptyList()
-                    for (ingredient in ingredients) {  //data CAN bes null here
-                        val food = foodList.first {it.id == ingredient.foodID}
-                        mealViewModel.addIngredient(food.group, food.name, ingredient.gram)
-                    }
-                }
-
             }
         }
 

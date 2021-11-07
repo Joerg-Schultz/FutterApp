@@ -223,7 +223,7 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
     private fun selectIngredient(context: Context) {
         val foodNameInput = EditText(context)
         foodNameInput.apply {
-            setHint("new food")
+            hint = resources.getString(R.string.new_food)
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -298,7 +298,7 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
             }
         }
         AlertDialog.Builder(context)
-            .setTitle("Amount")
+            .setTitle(resources.getString(R.string.amount))
             .setPositiveButton("OK") { dialog, which->
                 currentAmount = currentSelection
                if( currentAmount != 0 && currentFoodType != null) {

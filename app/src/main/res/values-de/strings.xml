@@ -46,4 +46,5 @@
     <string name="saturday">Samstag</string>
     <string name="sunday">Sonntag</string>
     <string name="pack">Paket(e)</string>
+    <string name="new_food">Neu</string>
 </resources>

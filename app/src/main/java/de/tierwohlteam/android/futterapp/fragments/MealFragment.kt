@@ -195,7 +195,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
     private fun selectIngredient(context: Context) {
         val foodNameInput = EditText(context)
         foodNameInput.apply {
-            setHint("new food")
+            hint = resources.getString(R.string.new_food)
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -239,7 +239,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             }
         }
         AlertDialog.Builder(context)
-            .setTitle("Grams")
+            .setTitle(resources.getString(R.string.gram))
             .setPositiveButton("OK") { dialog, which->
                 currentGram = currentSelection
                 if( currentFoodType != null) {

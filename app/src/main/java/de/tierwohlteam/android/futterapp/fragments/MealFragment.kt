@@ -128,17 +128,15 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         }
 
         lifecycleScope.launchWhenStarted {
-            mealViewModel.insertMealFlow.collect { result ->
-                val resource = result.getContentIfNotHandled()
-                if (resource != null) {
-                    when (resource.status) {
-                        Status.SUCCESS -> {
-                            Snackbar.make(binding.root,"Inserted Meal", Snackbar.LENGTH_LONG).show()
-                        }
-                        Status.ERROR -> {
-                            Snackbar.make(binding.root,"Could not insert Meal", Snackbar.LENGTH_LONG).show()
-                        }
-                        else -> { /* NO-OP */ }
+            mealViewModel.insertMealFlow.collect {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        Snackbar.make(binding.root, resources.getString(R.string.insert_meal), Snackbar.LENGTH_LONG).show()
+                    }
+                    Status.ERROR -> {
+                        Snackbar.make(binding.root, resources.getString(R.string.insert_meal_error), Snackbar.LENGTH_LONG).show()
+                    }
+                    else -> { /* NO-OP */
                     }
                 }
             }

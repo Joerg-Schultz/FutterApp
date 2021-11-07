@@ -51,8 +51,8 @@ class MealViewModel @Inject constructor(
     private val _ingredientList: MutableStateFlow<List<MealComponent>> = MutableStateFlow(emptyList())
     val ingredientList: StateFlow<List<MealComponent>> = _ingredientList
 
-    private val _insertMealFlow: MutableStateFlow<Event<Resource<Meal>>> = MutableStateFlow(Event(Resource.empty()))
-    val insertMealFlow = _insertMealFlow as StateFlow<Event<Resource<Meal>>>
+    private val _insertMealFlow: MutableSharedFlow<Resource<Meal>> = MutableSharedFlow()
+    val insertMealFlow = _insertMealFlow as SharedFlow<Resource<Meal>>
 
     var allMeals: StateFlow<Resource<List<Meal>>> = repository.allMeals.stateIn(
         scope = viewModelScope,
@@ -67,7 +67,7 @@ class MealViewModel @Inject constructor(
     )
 
     suspend fun saveMeal() {
-        _insertMealFlow.value = Event(Resource.loading(null))
+        _insertMealFlow.emit(Resource.loading(null))
         val meal = Meal()
         val ingredientJob = viewModelScope.launch {
             for (component in _ingredientList.value) {
@@ -79,9 +79,9 @@ class MealViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.insertMeal(meal)
-                _insertMealFlow.value = Event(Resource.success(meal))
+                _insertMealFlow.emit(Resource.success(meal))
             } catch (e: Throwable) {
-                _insertMealFlow.value = Event(Resource.error("Could no insert meal", meal))
+                _insertMealFlow.emit(Resource.error("Could no insert meal", meal))
             }
 
         }

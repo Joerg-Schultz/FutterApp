@@ -44,6 +44,7 @@ class MealListAdapter(private val allFoods: List<Food>) :
     }
 
     override fun onBindViewHolder(holder: MealListAdapter.GoalViewHolder, position: Int) {
+        holder.setIsRecyclable(false) //TODO this kills recycling, but otherwise items are added to existing table
         val meal = differ.currentList[position]
         val timeStamp = meal.feeding.time
         val dayOfWeek = timeStamp.dayOfWeek.translate(holder.binding.tvDate.context, short = true)

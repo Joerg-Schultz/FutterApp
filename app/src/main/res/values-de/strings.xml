@@ -47,4 +47,6 @@
     <string name="sunday">Sonntag</string>
     <string name="pack">Paket(e)</string>
     <string name="new_food">Neu</string>
+    <string name="saved_rating">Rating gespeichert</string>
+    <string name="saved_rating_error">Konnte Rating nicht speichern</string>
 </resources>

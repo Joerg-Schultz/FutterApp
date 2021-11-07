@@ -46,4 +46,6 @@
     <string name="sunday">Sunday</string>
     <string name="pack">Pack(s)</string>
     <string name="new_food">New</string>
+    <string name="saved_rating">Saved Rating</string>
+    <string name="saved_rating_error">Could not save Rating</string>
 </resources>

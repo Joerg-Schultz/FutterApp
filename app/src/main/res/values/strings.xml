@@ -50,4 +50,6 @@
     <string name="saved_rating_error">Could not save Rating</string>
     <string name="insert_meal">Saved Meal</string>
     <string name="insert_meal_error">Could not save meal</string>
+    <string name="insert_pack">Saved Pack(s)</string>
+    <string name="insert_pack_error">Could not insert Pack(s)</string>
 </resources>

@@ -9,10 +9,7 @@ import de.tierwohlteam.android.futterapp.others.Event
 import de.tierwohlteam.android.futterapp.others.Resource
 import de.tierwohlteam.android.futterapp.repositories.FutterAppRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,11 +19,11 @@ class FridgeViewModel @Inject constructor(
     private val repository: FutterAppRepository,
 ) : ViewModel() {
 
-    private val _insertPacksFlow: MutableStateFlow<Event<Resource<PacksInFridge>>> = MutableStateFlow(Event(Resource.empty()))
-    val insertPacksFlow = _insertPacksFlow as StateFlow<Event<Resource<PacksInFridge>>>
+    private val _insertPacksFlow: MutableSharedFlow<Resource<PacksInFridge>> = MutableSharedFlow()
+    val insertPacksFlow = _insertPacksFlow as SharedFlow<Resource<PacksInFridge>>
 
-    private val _deletePackFlow: MutableStateFlow<Event<Resource<PacksInFridge>>> = MutableStateFlow(Event(Resource.empty()))
-    val deletePacksFlow = _deletePackFlow as StateFlow<Event<Resource<PacksInFridge>>>
+    private val _deletePackFlow: MutableSharedFlow<Resource<PacksInFridge>> = MutableSharedFlow()
+    val deletePacksFlow = _deletePackFlow as SharedFlow<Resource<PacksInFridge>>
 
     val content: StateFlow<Resource<List<PacksInFridge>>> = repository.fridgeContent.stateIn(
         scope = viewModelScope,
@@ -39,8 +36,7 @@ class FridgeViewModel @Inject constructor(
         initialValue = Resource.loading(emptyList())
     )
     suspend fun addToFridge(foodType: FoodType, foodName: String, gram: Int, amount: Int) {
-        Log.d("FOOD", "inserting")
-        _insertPacksFlow.value = Event(Resource.loading(null))
+        _insertPacksFlow.emit(Resource.loading(null))
         var pack: Pack? = null
         val foodJob = viewModelScope.launch {
             val food = repository.getFoodByNameAndType(type = foodType, name = foodName)
@@ -50,9 +46,9 @@ class FridgeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val packsInFridge = repository.addPacksToFridge(pack!!, amount)
-                _insertPacksFlow.value = Event(Resource.success(packsInFridge))
+                _insertPacksFlow.emit(Resource.success(packsInFridge))
             } catch (e: Throwable) {
-                _insertPacksFlow.value = Event(Resource.error("Could not insert packs", null))
+                _insertPacksFlow.emit(Resource.error("Could not insert packs", null))
             }
 
         }
@@ -64,9 +60,9 @@ class FridgeViewModel @Inject constructor(
             viewModelScope.launch {
                 try {
                     val packInFridge = repository.getPackFromFridge(pack)
-                    _deletePackFlow.value = Event(Resource.success(packInFridge))
+                    _deletePackFlow.emit(Resource.success(packInFridge))
                 } catch (e: Throwable) {
-                    _insertPacksFlow.value = Event(Resource.error("Could not retrieve pack", null))
+                    _insertPacksFlow.emit(Resource.error("Could not retrieve pack", null))
                 }
             }
         }

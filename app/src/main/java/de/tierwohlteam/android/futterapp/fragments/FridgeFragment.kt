@@ -179,17 +179,15 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
             }
         }
         lifecycleScope.launchWhenStarted {
-            fridgeViewModel.insertPacksFlow.collect { result ->
-                val resource = result.getContentIfNotHandled()
-                if (resource != null) {
-                    when (resource.status) {
-                        Status.SUCCESS -> {
-                            Snackbar.make(binding.root,"Inserted Packs", Snackbar.LENGTH_LONG).show()
-                        }
-                        Status.ERROR -> {
-                            Snackbar.make(binding.root,"Could not insert Packs", Snackbar.LENGTH_LONG).show()
-                        }
-                        else -> { /* NO-OP */ }
+            fridgeViewModel.insertPacksFlow.collect {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        Snackbar.make(binding.root, resources.getString(R.string.insert_pack), Snackbar.LENGTH_LONG).show()
+                    }
+                    Status.ERROR -> {
+                        Snackbar.make(binding.root, resources.getString(R.string.insert_pack_error), Snackbar.LENGTH_LONG).show()
+                    }
+                    else -> { /* NO-OP */
                     }
                 }
             }

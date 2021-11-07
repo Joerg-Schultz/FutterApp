@@ -47,6 +47,7 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
     }
 
     override fun onBindViewHolder(holder: CalendarListAdapter.CalendarViewHolder, position: Int) {
+        holder.setIsRecyclable(false) //TODO this kills recycling, but otherwise items are added to existing table
         val calendarEntry = differ.currentList[position]
         addHeader(calendarEntry, holder)
         var meals = calendarEntry.meals

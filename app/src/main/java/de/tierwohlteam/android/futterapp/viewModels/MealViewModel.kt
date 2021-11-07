@@ -1,6 +1,5 @@
 package de.tierwohlteam.android.futterapp.viewModels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.benasher44.uuid.Uuid
@@ -8,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.tierwohlteam.android.futterapp.models.*
 import de.tierwohlteam.android.futterapp.others.Event
 import de.tierwohlteam.android.futterapp.others.Resource
+import de.tierwohlteam.android.futterapp.others.Status
 import de.tierwohlteam.android.futterapp.repositories.FutterAppRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -20,6 +20,27 @@ class MealViewModel @Inject constructor(
     private val repository: FutterAppRepository,
 ) : ViewModel() {
 
+    init {
+        val latestMeal: StateFlow<Resource<Meal?>> = repository.latestMeal.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = Resource.loading(null)
+        )
+
+        viewModelScope.launch {
+            latestMeal.collect{ result ->
+                if (result.status == Status.SUCCESS) {
+                    emptyIngredientList()
+                    val ingredients = result.data?.ingredients ?: emptyList()
+                    for (ingredient in ingredients) {  //data CAN bes null here
+                        val food = allFoods.value.data?.firstOrNull() {it.id == ingredient.foodID}
+                        if (food != null) addIngredient(food.group, food.name, ingredient.gram)
+                    }
+                }
+
+            }
+        }
+    }
     // Combines Ingredients with name + group of food
     inner class MealComponent(
         val foodGroup: FoodType,
@@ -30,19 +51,13 @@ class MealViewModel @Inject constructor(
     private val _ingredientList: MutableStateFlow<List<MealComponent>> = MutableStateFlow(emptyList())
     val ingredientList: StateFlow<List<MealComponent>> = _ingredientList
 
-    private val _insertMealFlow: MutableStateFlow<Event<Resource<Meal>>> = MutableStateFlow(Event(Resource.empty()))
-    val insertMealFlow = _insertMealFlow as StateFlow<Event<Resource<Meal>>>
+    private val _insertMealFlow: MutableSharedFlow<Resource<Meal>> = MutableSharedFlow()
+    val insertMealFlow = _insertMealFlow as SharedFlow<Resource<Meal>>
 
     var allMeals: StateFlow<Resource<List<Meal>>> = repository.allMeals.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = Resource.loading(emptyList())
-    )
-
-    var latestMeal: StateFlow<Resource<Meal?>> = repository.latestMeal.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = Resource.loading(null)
     )
 
     var allFoods: StateFlow<Resource<List<Food>>> = repository.allFoods.stateIn(
@@ -52,7 +67,7 @@ class MealViewModel @Inject constructor(
     )
 
     suspend fun saveMeal() {
-        _insertMealFlow.value = Event(Resource.loading(null))
+        _insertMealFlow.emit(Resource.loading(null))
         val meal = Meal()
         val ingredientJob = viewModelScope.launch {
             for (component in _ingredientList.value) {
@@ -64,9 +79,9 @@ class MealViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.insertMeal(meal)
-                _insertMealFlow.value = Event(Resource.success(meal))
+                _insertMealFlow.emit(Resource.success(meal))
             } catch (e: Throwable) {
-                _insertMealFlow.value = Event(Resource.error("Could no insert meal", meal))
+                _insertMealFlow.emit(Resource.error("Could no insert meal", meal))
             }
 
         }

@@ -90,27 +90,28 @@ class AddRatingFragment: Fragment() {
         //Did the insert work?
         lifecycleScope.launch {
             ratingViewModel.insertRatingFlow.collect {
-                it.getContentIfNotHandled()?.let { result ->
-                    when (result.status) {
-                        Status.ERROR -> {
-                            Snackbar.make(
-                                binding.root,
-                                result.message ?: "Konnte Rating nicht speichern",
-                                Snackbar.LENGTH_LONG
-                            ).setAnchorView(R.id.fab_addRating)
-                                .show()
-                        }
-                        Status.SUCCESS -> {
-                            Snackbar.make(
-                                binding.root,
-                                "Rating gespeichert",
-                                Snackbar.LENGTH_LONG
-                            ).setAnchorView(R.id.fab_addRating)
-                                .show()
-                        }
-                        else -> { /* NO-OP */ }
+                when (it.status) {
+                    Status.ERROR -> {
+                        Snackbar.make(
+                            binding.root,
+                            it.message ?: resources.getString(R.string.saved_rating_error),
+                            Snackbar.LENGTH_LONG
+                        ).setAnchorView(R.id.fab_addRating)
+                            .show()
+                    }
+                    Status.SUCCESS -> {
+                        Snackbar.make(
+                            binding.root,
+                            //  "Rating gespeichert",
+                            resources.getString(R.string.saved_rating),
+                            Snackbar.LENGTH_LONG
+                        ).setAnchorView(R.id.fab_addRating)
+                            .show()
+                    }
+                    else -> { /* NO-OP */
                     }
                 }
+
             }
         }
     }

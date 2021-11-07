@@ -1,6 +1,5 @@
 package de.tierwohlteam.android.futterapp.repositories
 
-import android.util.Log
 import com.benasher44.uuid.Uuid
 import de.tierwohlteam.android.futterapp.models.*
 import de.tierwohlteam.android.futterapp.others.Resource

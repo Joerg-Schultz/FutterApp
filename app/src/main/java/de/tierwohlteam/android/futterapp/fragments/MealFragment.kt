@@ -3,7 +3,6 @@ package de.tierwohlteam.android.futterapp.fragments
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,13 +43,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import java.util.*
-import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 @ExperimentalCoroutinesApi
-class MealFragment @Inject constructor(
-    private val foodListAdapter: FoodListAdapter
-): Fragment(R.layout.meal_fragment) {
+class MealFragment: Fragment(R.layout.meal_fragment) {
     private var _binding: MealFragmentBinding? = null
     private val binding get() = _binding!!
 
@@ -65,7 +61,7 @@ class MealFragment @Inject constructor(
         val fragmentTitleList: Map<String,Fragment> = mapOf(
             getString(R.string.addMeal) to AddMealFragment(),
             getString(R.string.showMeals) to ShowMealsFragment(),
-            getString(R.string.food) to ShowFoodFragment(foodListAdapter),
+            getString(R.string.food) to ShowFoodFragment(),
         )
         viewPager2.adapter = MealViewPagerAdapter(this.childFragmentManager, lifecycle,
             ArrayList(fragmentTitleList.values)
@@ -132,31 +128,15 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
         }
 
         lifecycleScope.launchWhenStarted {
-            mealViewModel.latestMeal.collect{ result ->
-                if (result.status == Status.SUCCESS) {
-                    mealViewModel.emptyIngredientList()
-                    val ingredients = result.data?.ingredients ?: emptyList()
-                    for (ingredient in ingredients) {  //data CAN bes null here
-                        val food = foodList.first {it.id == ingredient.foodID}
-                        mealViewModel.addIngredient(food.group, food.name, ingredient.gram)
+            mealViewModel.insertMealFlow.collect {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        Snackbar.make(binding.root, resources.getString(R.string.insert_meal), Snackbar.LENGTH_LONG).show()
                     }
-                }
-
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            mealViewModel.insertMealFlow.collect { result ->
-                val resource = result.getContentIfNotHandled()
-                if (resource != null) {
-                    when (resource.status) {
-                        Status.SUCCESS -> {
-                            Snackbar.make(binding.root,"Inserted Meal", Snackbar.LENGTH_LONG).show()
-                        }
-                        Status.ERROR -> {
-                            Snackbar.make(binding.root,"Could not insert Meal", Snackbar.LENGTH_LONG).show()
-                        }
-                        else -> { /* NO-OP */ }
+                    Status.ERROR -> {
+                        Snackbar.make(binding.root, resources.getString(R.string.insert_meal_error), Snackbar.LENGTH_LONG).show()
+                    }
+                    else -> { /* NO-OP */
                     }
                 }
             }
@@ -213,7 +193,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
     private fun selectIngredient(context: Context) {
         val foodNameInput = EditText(context)
         foodNameInput.apply {
-            setHint("new food")
+            hint = resources.getString(R.string.new_food)
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -257,7 +237,7 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             }
         }
         AlertDialog.Builder(context)
-            .setTitle("Grams")
+            .setTitle(resources.getString(R.string.gram))
             .setPositiveButton("OK") { dialog, which->
                 currentGram = currentSelection
                 if( currentFoodType != null) {
@@ -328,14 +308,12 @@ class ShowMealsFragment: Fragment(R.layout.show_meals_fragment) {
 }
 
 @ExperimentalCoroutinesApi
-class ShowFoodFragment @Inject constructor(
-    private val foodListAdapter: FoodListAdapter
-): Fragment(R.layout.show_food_fragment) {
+class ShowFoodFragment: Fragment(R.layout.show_food_fragment) {
     private var _binding: ShowFoodFragmentBinding? = null
     private val binding get() = _binding!!
 
     private val mealViewModel: MealViewModel by activityViewModels()
-    //private lateinit var foodListAdapter: FoodListAdapter
+    private lateinit var foodListAdapter: FoodListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -349,7 +327,7 @@ class ShowFoodFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvFoodlist.apply {
-            //foodListAdapter = FoodListAdapter()
+            foodListAdapter = FoodListAdapter()
             adapter = foodListAdapter
             //layoutManager = LinearLayoutManager(requireContext())
             layoutManager = GridLayoutManager(requireContext(),2)

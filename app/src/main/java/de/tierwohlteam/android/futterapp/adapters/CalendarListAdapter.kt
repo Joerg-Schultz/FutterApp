@@ -103,10 +103,17 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
         timeCell.text = timeString
         timeCell.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
         row.addView(timeCell,0)
+        /* rating bar in table does not work -> change to plain text
         val starCell = RatingBar(table.context,null, android.R.attr.ratingBarStyleSmall)
         starCell.rating = rating.value
         starCell.setPadding(16,0,0,0)
         row.addView(starCell,1)
+         */
+        val ratingCell = TextView(table.context)
+        val ratingString = List(rating.value.toInt()) { 0x02B50.toChar() }.joinToString(" ") + rating.comment
+        ratingCell.text = ratingString
+        ratingCell.setPadding(16,0,0,0)
+        row.addView(ratingCell,1)
         table.addView(row)
     }
     private fun addMealToTable(meal: Meal, table: TableLayout) {

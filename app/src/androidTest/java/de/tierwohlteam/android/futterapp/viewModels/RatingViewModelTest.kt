@@ -57,13 +57,13 @@ class RatingViewModelTest {
         val ratingViewModel = RatingViewModel(repository)
         val rating = 3.5F
         val comment = "Excellent"
-        ratingViewModel.insertRating(rating, comment)
 
         ratingViewModel.insertRatingFlow.test {
-            val insertResult = awaitItem()
-            val resource = insertResult.getContentIfNotHandled()!!
+            ratingViewModel.insertRating(rating, comment)
+            val resource = awaitItem()
             assertThat(resource.status).isEqualTo(Status.SUCCESS)
             assertThat(resource.data!!.value).isEqualTo(rating)
+            cancelAndConsumeRemainingEvents()
         }
     }
 

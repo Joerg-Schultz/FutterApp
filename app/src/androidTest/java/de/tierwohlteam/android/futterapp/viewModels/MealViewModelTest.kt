@@ -131,13 +131,15 @@ class MealViewModelTest {
         val foodName = "Pute"
         val gram = 250
         mealViewModel.addIngredient(foodType, foodName, gram)
-        mealViewModel.saveMeal()
 
         mealViewModel.insertMealFlow.test {
-            val insertResult = awaitItem()
-            val resource = insertResult.getContentIfNotHandled()!!
+            mealViewModel.saveMeal()
+            val resourceLoading = awaitItem()
+            assertThat(resourceLoading.status).isEqualTo(Status.LOADING)
+            val resource = awaitItem()
             assertThat(resource.status).isEqualTo(Status.SUCCESS)
             assertThat(resource.data!!.ingredients).hasSize(1)
+            cancelAndConsumeRemainingEvents()
         }
     }
 
@@ -151,11 +153,10 @@ class MealViewModelTest {
         val secondGram = 500
         mealViewModel.addIngredient(foodType, foodName, secondGram)
         mealViewModel.saveMeal()
-        mealViewModel.latestMeal.test {
+        mealViewModel.ingredientList.test {
             val meal = awaitItem()
-            assertThat(meal.status).isEqualTo(Status.SUCCESS)
-            assertThat(meal.data!!.ingredients).hasSize(2)
-            assertThat(meal.data!!.ingredients[1].gram).isEqualTo(secondGram)
+            assertThat(meal).hasSize(2)
+            assertThat(meal[1].gram).isEqualTo(secondGram)
         }
     }
 

@@ -70,10 +70,11 @@ class FridgeViewModelTest {
         val foodName = "Pute"
         val gram = 500
         val amount = 2
-        fridgeViewModel.addToFridge(foodType, foodName, gram, amount)
         fridgeViewModel.insertPacksFlow.test {
-            val insertResult = awaitItem()
-            val resource = insertResult.getContentIfNotHandled()!!
+            fridgeViewModel.addToFridge(foodType, foodName, gram, amount)
+            val resourceLoading = awaitItem()
+            assertThat(resourceLoading.status).isEqualTo(Status.LOADING)
+            val resource = awaitItem()
             assertThat(resource.status).isEqualTo(Status.SUCCESS)
             assertThat(resource.data).isNotNull()
             assertThat(resource.data!!.amount).isEqualTo(amount)

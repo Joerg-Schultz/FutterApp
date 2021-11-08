@@ -20,6 +20,17 @@ class MealViewModel @Inject constructor(
     private val repository: FutterAppRepository,
 ) : ViewModel() {
 
+    // Combines Ingredients with name + group of food
+    inner class MealComponent(
+        val foodGroup: FoodType,
+        val foodName: String,
+        val foodID: Uuid?,
+        val gram: Int
+    ) { }
+    private val _ingredientList: MutableStateFlow<List<MealComponent>> = MutableStateFlow(emptyList())
+    val ingredientList: StateFlow<List<MealComponent>> = _ingredientList
+
+
     init {
         val latestMeal: StateFlow<Resource<Meal?>> = repository.latestMeal.stateIn(
             scope = viewModelScope,
@@ -41,15 +52,6 @@ class MealViewModel @Inject constructor(
             }
         }
     }
-    // Combines Ingredients with name + group of food
-    inner class MealComponent(
-        val foodGroup: FoodType,
-        val foodName: String,
-        val foodID: Uuid?,
-        val gram: Int
-    ) { }
-    private val _ingredientList: MutableStateFlow<List<MealComponent>> = MutableStateFlow(emptyList())
-    val ingredientList: StateFlow<List<MealComponent>> = _ingredientList
 
     private val _insertMealFlow: MutableSharedFlow<Resource<Meal>> = MutableSharedFlow()
     val insertMealFlow = _insertMealFlow as SharedFlow<Resource<Meal>>

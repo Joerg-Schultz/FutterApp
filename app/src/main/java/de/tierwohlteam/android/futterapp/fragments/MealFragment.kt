@@ -43,10 +43,13 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 @ExperimentalCoroutinesApi
-class MealFragment: Fragment(R.layout.meal_fragment) {
+class MealFragment @Inject constructor(
+    private val foodListAdapter: FoodListAdapter
+): Fragment(R.layout.meal_fragment) {
     private var _binding: MealFragmentBinding? = null
     private val binding get() = _binding!!
 
@@ -61,7 +64,7 @@ class MealFragment: Fragment(R.layout.meal_fragment) {
         val fragmentTitleList: Map<String,Fragment> = mapOf(
             getString(R.string.addMeal) to AddMealFragment(),
             getString(R.string.showMeals) to ShowMealsFragment(),
-            getString(R.string.food) to ShowFoodFragment(),
+            getString(R.string.food) to ShowFoodFragment(foodListAdapter),
         )
         viewPager2.adapter = MealViewPagerAdapter(this.childFragmentManager, lifecycle,
             ArrayList(fragmentTitleList.values)
@@ -308,12 +311,14 @@ class ShowMealsFragment: Fragment(R.layout.show_meals_fragment) {
 }
 
 @ExperimentalCoroutinesApi
-class ShowFoodFragment: Fragment(R.layout.show_food_fragment) {
+class ShowFoodFragment @Inject constructor(
+    private val foodListAdapter: FoodListAdapter
+): Fragment(R.layout.show_food_fragment) {
     private var _binding: ShowFoodFragmentBinding? = null
     private val binding get() = _binding!!
 
     private val mealViewModel: MealViewModel by activityViewModels()
-    private lateinit var foodListAdapter: FoodListAdapter
+    //private lateinit var foodListAdapter: FoodListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -327,7 +332,7 @@ class ShowFoodFragment: Fragment(R.layout.show_food_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvFoodlist.apply {
-            foodListAdapter = FoodListAdapter()
+            //foodListAdapter = FoodListAdapter()
             adapter = foodListAdapter
             //layoutManager = LinearLayoutManager(requireContext())
             layoutManager = GridLayoutManager(requireContext(),2)

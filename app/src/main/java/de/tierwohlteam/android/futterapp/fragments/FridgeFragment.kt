@@ -232,7 +232,8 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
         val foodNames = foodList.filter { it.group == currentFoodType }
             .map { it.name }
             .toTypedArray()
-        MaterialAlertDialogBuilder(context)
+
+        val alertDialog =  MaterialAlertDialogBuilder(context)
             .setTitle(resources.getString(R.string.select_ingredient))
             .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
                 currentFoodName = ""
@@ -243,11 +244,34 @@ class FillFridgeFragment: Fragment(R.layout.fill_fridge_fragment) {
                 }
                 selectGram(context)
             }
-            .setSingleChoiceItems(foodNames, -1) { dialog, which ->
+        if (foodNames.size <= 5) {
+            alertDialog.setSingleChoiceItems(foodNames, -1) { dialog, which ->
                 currentFoodName = foodNames[which]
             }
-            .setView(foodNameInput)
-            .show()
+            alertDialog.setView(foodNameInput)
+        } else {
+            val ingredientPicker = NumberPicker(context)
+            ingredientPicker.apply {
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT)
+                wrapSelectorWheel = false
+                minValue = 1
+                displayedValues = foodNames
+                maxValue = foodNames.size
+                setOnValueChangedListener { picker, oldVal, newVal ->
+                    currentFoodName = foodNames[newVal-1]
+                }
+            }
+            val combinedLayout = LinearLayout(context)
+            combinedLayout.apply {
+                orientation = LinearLayout.VERTICAL
+                addView(ingredientPicker)
+                addView(foodNameInput)
+            }
+            alertDialog.setView(combinedLayout)
+        }
+        alertDialog.show()
+
     }
 
     private fun selectGram(context: Context) {

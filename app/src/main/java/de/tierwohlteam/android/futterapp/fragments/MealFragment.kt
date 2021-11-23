@@ -148,7 +148,8 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
 
     private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(
         0,
-        ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
+        ItemTouchHelper.RIGHT,
+        //ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT,
     ) {
         override fun onMove(
             recyclerView: RecyclerView,

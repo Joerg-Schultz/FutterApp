@@ -134,10 +134,14 @@ class AddMealFragment : Fragment(R.layout.add_meal_fragment) {
             mealViewModel.insertMealFlow.collect {
                 when (it.status) {
                     Status.SUCCESS -> {
-                        Snackbar.make(binding.root, resources.getString(R.string.insert_meal), Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, resources.getString(R.string.insert_meal), Snackbar.LENGTH_LONG)
+                            .setAnchorView(R.id.btn_savemeal)
+                            .show()
                     }
                     Status.ERROR -> {
-                        Snackbar.make(binding.root, resources.getString(R.string.insert_meal_error), Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, resources.getString(R.string.insert_meal_error), Snackbar.LENGTH_LONG)
+                            .setAnchorView(R.id.btn_savemeal)
+                            .show()
                     }
                     else -> { /* NO-OP */
                     }

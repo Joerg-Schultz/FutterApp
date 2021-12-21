@@ -50,9 +50,9 @@ class CalendarListAdapter: RecyclerView.Adapter<CalendarListAdapter.CalendarView
         holder.setIsRecyclable(false) //TODO this kills recycling, but otherwise items are added to existing table
         val calendarEntry = differ.currentList[position]
         addHeader(calendarEntry, holder)
-        var meals = calendarEntry.meals
+        var meals = calendarEntry.meals.toMutableList() // I need a COPY of the property. Without toMutableList I work on the prop itself :o
         meals.sortBy { it.feeding.time }
-        var ratings = calendarEntry.ratings
+        var ratings = calendarEntry.ratings.toMutableList()
         ratings.sortBy { it.timeStamp }
         val table = holder.binding.tableCalendarItem
         while (meals.isNotEmpty() || ratings.isNotEmpty()) {

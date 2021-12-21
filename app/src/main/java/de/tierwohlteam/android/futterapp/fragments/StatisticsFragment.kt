@@ -1,6 +1,7 @@
 package de.tierwohlteam.android.futterapp.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -104,6 +105,8 @@ class ShowCalendarFragment: Fragment() {
                         binding.pBCalendar.visibility = View.VISIBLE
                     }
                     Status.SUCCESS -> {
+                        //val bla = result.data?.first()?.ratings?.size ?: 0
+                        //Log.d("MEAL", "Send to recview $bla : ${result.data}")
                         binding.pBCalendar.visibility = View.GONE
                         result.data?.let { list ->
                             calendarListAdapter.foodList = foodList.value

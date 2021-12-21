@@ -113,8 +113,5 @@ class ShowCalendarFragment: Fragment() {
                 }
             }
         }
-
-        statisticsViewModel.getEntriesTest()
-
     }
 }

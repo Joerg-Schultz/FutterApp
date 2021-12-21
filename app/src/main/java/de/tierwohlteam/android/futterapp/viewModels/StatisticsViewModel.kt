@@ -15,6 +15,7 @@ import de.tierwohlteam.android.futterapp.repositories.FutterAppRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -28,79 +29,51 @@ class StatisticsViewModel @Inject constructor(
     private val repository: FutterAppRepository,
 ) : ViewModel() {
 
-    var allFoods: MutableStateFlow<Resource<List<Food>>> = MutableStateFlow(value = Resource.empty())
-
     data class CalendarEntry(
         val date: LocalDate,
         val ratings: MutableList<Rating> = mutableListOf(),
         val meals: MutableList<Meal> = mutableListOf()
     )
-    var allEntries: MutableStateFlow<Resource<List<CalendarEntry>>> =
-        MutableStateFlow(value = Resource.loading(null))
 
-    @OptIn(FlowPreview::class)
-    fun getEntriesTest() {
-        val allCalendarEntries = mutableMapOf<LocalDate, CalendarEntry>()
-        viewModelScope.launch {
-            repository.allMeals.flatMapLatest { result ->
-                if (result.status == Status.SUCCESS) {
-                    for (meal in result.data!!) {
-                        val mealDate = meal.feeding.time.date
-                        val calendarEntry = allCalendarEntries.getOrPut(mealDate) { CalendarEntry(date = mealDate) }
-                        calendarEntry.meals.add(meal)
-                        allCalendarEntries[mealDate] = calendarEntry
-                    }
-                }
-                repository.allFoods
-            }.collect { foodResult ->
-                if (foodResult.status == Status.SUCCESS) {
-                    allFoods.value = foodResult
-                    allEntries.value = Resource.success(allCalendarEntries.values.toList())
-                }
-            }
-        }
-        viewModelScope.launch {
-            repository.allRatings.collect { allRatings ->
-                if (allRatings.status == Status.SUCCESS) {
-                    for (rating in allRatings.data!!) {
-                        val ratingDate = rating.timeStamp.date
-                        val calendarEntry = allCalendarEntries.getOrPut(ratingDate) { CalendarEntry(date = ratingDate) }
-                        calendarEntry.ratings.add(rating)
-                        allCalendarEntries[ratingDate] = calendarEntry
-                    }
-                    allEntries.value = Resource.success(allCalendarEntries.values.toList())
-                }
-            }
+    var allFoods: MutableStateFlow<Resource<List<Food>>> = MutableStateFlow(Resource.loading(emptyList()))
+
+    var allEntries: StateFlow<Resource<List<CalendarEntry>>> =
+        combine(repository.allRatings, repository.allMeals, repository.allFoods) {
+                ratingResource, mealResource, foodResource ->
+            setFoodTest(foodResource)
+            val listTest: List<CalendarEntry> = buildCalendarEntries(mealResource, ratingResource)
+            Resource.success(listTest)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = Resource.loading(emptyList())
+        )
+
+    private fun setFoodTest(foodResource: Resource<List<Food>>) {
+        if (foodResource.status == Status.SUCCESS) {
+            allFoods.value = foodResource
         }
     }
 
-    fun getEntries() {
-        val allCalendarEntries = mutableMapOf<LocalDate, CalendarEntry>()
-        viewModelScope.launch {
-            repository.allMeals.collect { allMeals ->
-                if (allMeals.status == Status.SUCCESS) {
-                    for (meal in allMeals.data!!) {
-                        val mealDate = meal.feeding.time.date
-                        val calendarEntry = allCalendarEntries.getOrPut(mealDate) { CalendarEntry(date = mealDate) }
-                        calendarEntry.meals.add(meal)
-                        allCalendarEntries[mealDate] = calendarEntry
-                    }
-                    allEntries.value = Resource.success(allCalendarEntries.values.toList())
-                }
+    private fun buildCalendarEntries(mealResource: Resource<List<Meal>>, ratingResource: Resource<List<Rating>>) : List<CalendarEntry> {
+        val calendarEntries =  mutableMapOf<LocalDate, CalendarEntry>()
+        if (mealResource.status == Status.SUCCESS && ratingResource.status == Status.SUCCESS) {
+            mealResource.data!!.forEach { meal ->
+                val mealDate = meal.feeding.time.date
+                val calendarEntry = calendarEntries.getOrPut(mealDate) { CalendarEntry(date = mealDate) }
+                calendarEntry.meals.add(meal)
+                calendarEntries[mealDate] = calendarEntry
+
+            }
+            ratingResource.data!!.forEach { rating ->
+                val ratingDate = rating.timeStamp.date
+                val calendarEntry =
+                    calendarEntries.getOrPut(ratingDate) { CalendarEntry(date = ratingDate) }
+                calendarEntry.ratings.add(rating)
+                calendarEntries[ratingDate] = calendarEntry
+
             }
         }
-        viewModelScope.launch {
-            repository.allRatings.collect { allRatings ->
-                if (allRatings.status == Status.SUCCESS) {
-                    for (rating in allRatings.data!!) {
-                        val ratingDate = rating.timeStamp.date
-                        val calendarEntry = allCalendarEntries.getOrPut(ratingDate) { CalendarEntry(date = ratingDate) }
-                        calendarEntry.ratings.add(rating)
-                        allCalendarEntries[ratingDate] = calendarEntry
-                    }
-                    allEntries.value = Resource.success(allCalendarEntries.values.toList())
-                }
-            }
-        }
+        return calendarEntries.values.toList()
     }
 }

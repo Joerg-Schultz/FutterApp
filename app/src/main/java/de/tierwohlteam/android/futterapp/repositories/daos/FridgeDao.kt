@@ -1,18 +1,12 @@
 package de.tierwohlteam.android.futterapp.repositories.daos
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import de.tierwohlteam.android.futterapp.models.Fridge
 import de.tierwohlteam.android.futterapp.models.Pack
 import de.tierwohlteam.android.futterapp.models.PacksInFridge
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 @Dao
@@ -29,7 +23,7 @@ interface FridgeDao {
     @Query("SELECT * from drawer where foodID = :foodID and packSize = :packSize")
     suspend fun drawer(foodID: Uuid, packSize: Int): Fridge.Drawer?
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDrawer(drawer: Fridge.Drawer)
 
     fun content(): Flow<List<PacksInFridge>> = allDrawers().map { list ->

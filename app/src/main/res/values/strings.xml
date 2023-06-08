@@ -53,4 +53,10 @@
     <string name="insert_pack">Saved Pack(s)</string>
     <string name="insert_pack_error">Could not insert Pack(s)</string>
     <string name="empty_database">Empty Database</string>
+    <string name="empty_database_warning">Do you really want to delete all your data? This will be permanent, the data
+        will not be recovarable.
+    </string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="empty_database_canceled">Your data are kept.</string>
 </resources>

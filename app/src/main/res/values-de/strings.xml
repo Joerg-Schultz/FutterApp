@@ -54,4 +54,9 @@
     <string name="insert_pack">Paket(e) gespeichert</string>
     <string name="insert_pack_error">Konnte Paket(e) nicht speichern</string>
     <string name="empty_database">Datenbank leeren</string>
+    <string name="empty_database_warning">Wollen Sie wirklich alle Ihre Daten löschen? Die Daten werden permanent gelöscht und können nicht wieder hergestellt werden.
+    </string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="empty_database_canceled">Ihre Daten wurden behalten.</string>
 </resources>

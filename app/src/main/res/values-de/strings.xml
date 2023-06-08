@@ -53,4 +53,5 @@
     <string name="insert_meal_error">Konnte Essen nicht speichern</string>
     <string name="insert_pack">Paket(e) gespeichert</string>
     <string name="insert_pack_error">Konnte Paket(e) nicht speichern</string>
+    <string name="empty_database">Datenbank leeren</string>
 </resources>

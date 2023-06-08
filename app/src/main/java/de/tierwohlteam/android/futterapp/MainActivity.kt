@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
@@ -14,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import de.tierwohlteam.android.futterapp.databinding.MainActivityBinding
 import de.tierwohlteam.android.futterapp.fragments.FutterAppFragmentFactory
+import de.tierwohlteam.android.futterapp.viewModels.MainViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
@@ -25,6 +27,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var fragmentFactory: FutterAppFragmentFactory
 
     private lateinit var binding: MainActivityBinding
+    private val mainViewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportFragmentManager.fragmentFactory = fragmentFactory
@@ -56,11 +60,10 @@ class MainActivity : AppCompatActivity() {
             .setMessage(getString(R.string.empty_database_warning))
             .setIcon(R.drawable.ic_warning)
             .setPositiveButton(getString(R.string.yes)) {_,_ ->
-                // empty database here
+                mainViewModel.emptyDatabase()
             }
             .setNegativeButton(getString(R.string.no)) {_, _ ->
-                Snackbar.make(window.decorView.findViewById(android.R.id.content),
-                    getString(R.string.empty_database_canceled), Toast.LENGTH_LONG).show()
+                /* NO-OP */
             }
         .create()
         emptyDatabaseDialog.setOnShowListener {

@@ -3,12 +3,26 @@ package de.tierwohlteam.android.futterapp.repositories
 import com.benasher44.uuid.Uuid
 import de.tierwohlteam.android.futterapp.models.*
 import de.tierwohlteam.android.futterapp.others.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FutterAppRepository @Inject constructor(
     private val database: FutterAppDB
 ) {
+
+    /**
+     * Database Functions
+     */
+    /**
+     * Empty the database.
+     * All data will be deleted
+     */
+    suspend fun emptyDatabase() = withContext(Dispatchers.IO) {
+        database.clearAllTables()
+    }
+
     /**
      * Rating functions
      */
@@ -150,5 +164,6 @@ class FutterAppRepository @Inject constructor(
      */
     suspend fun getPackFromFridge(pack: Pack): PacksInFridge? =
         fridgeDao.getPack(pack)
+
 
 }
